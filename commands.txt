@@ -1,0 +1,15 @@
+psql postgres postgres
+
+\l  # list all database
+\c <database name>  # connect to a database
+\dt  #list all table in a database
+\du # list all users
+
+DROP DATABASE chat;
+CREATE DATABASE chat;
+GRANT ALL PRIVILEGES ON DATABASE chat to django
+
+psql chat django  # connect to the chat with user django
+
+\q
+
