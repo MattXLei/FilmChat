@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<style type="text/css">
+
+:root {
+    --gradient: linear-gradient(to left top, #DD2476 10%, #FF512F 90%) !important;
+  }
+  
+  body {
+    background: #111 !important;
+  }
+  
+  .card {
+    background: #222;
+    border: 1px solid #dd2476;
+    color: rgba(250, 250, 250, 0.8);
+    margin-bottom: 2rem;
+  }
+
+  .card-img-top {
+    width: 100%;
+    max-height: 150px;
+    object-fit: contain;
+    padding: 25px 50px 0px;
+}
+  
+  .btn {
+    border: 5px solid;
+    border-image-slice: 1;
+    background: var(--gradient) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    border-image-source:  var(--gradient) !important; 
+    text-decoration: none;
+    transition: all .4s ease;
+  }
+  
+  .btn:hover, .btn:focus {
+        background: var(--gradient) !important;
+    -webkit-background-clip: none !important;
+    -webkit-text-fill-color: #fff !important;
+    border: 5px solid #fff !important; 
+    box-shadow: #222 1px 0 10px;
+    text-decoration: underline;
+  }
+
+
+</style>
+
+ 
+<div class="container mx-auto mt-4">    
+       
+        {% for movie in movies %}       
+            {% if forloop.first %}<div class="row">{% endif %}                      
+            <div class="col-md-4">     
+                <div class="card" style="width: 18rem;">
+                    <img src="{{movie.poster_link}}" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">{{movie.series_title}}</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">{{movie.certificate}}</h6>
+                        <p class="card-text">{{movie.overview|truncatechars:80}}</p>
+                        <a href="{% url 'movie:detail' movie.pk %}" class="btn mr-2"><i class="fas fa-link"></i> Detail</a>
+                        <!-- <a href="#" class="btn "><i class="fab fa-github"></i> Chat </a> -->
+                    </div>
+                </div>
+            </div>
+            {% if forloop.counter|divisibleby:3 %}</div><div class="row">{% endif %}  
+            {% if forloop.last %}</div>{% endif %}
+        {% endfor %}
+    </div>
+
+<br>
+<br>
+  <div style="text-align: center;">
+    {% if is_paginated %}
+    {% if page_obj.has_previous %}
+        <a class="btn btn-outline-info mb-4" href="?page=1">First</a>
+        <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+    {% endif%}
+    
+    {% for num in page_obj.paginator.page_range %}
+        {% if page_obj.number == num %}
+            <a class="btn btn-info mb-4" href="?page={{ num }}">{{ num }}</a>
+        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+            <a class="btn btn-outline-info mb-4" href="?page={{ num }}">{{ num }}</a>
+        {% endif %}
+    
+    {% endfor %}
+    
+    {% if page_obj.has_next %}
+        <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.next_page_number }}">Next</a>
+        <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+    {% endif%}
+    
+    {% endif %}
+    
+
+  </div>
+
+</div>
+
+{% endblock content %}

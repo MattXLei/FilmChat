@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'friend',
     'public_chat',
     'channels',
+    'movie',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
