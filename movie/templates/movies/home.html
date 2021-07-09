@@ -62,7 +62,7 @@
                         <h5 class="card-title">{{movie.series_title}}</h5>
                         <h6 class="card-subtitle mb-2 text-muted">{{movie.certificate}}</h6>
                         <p class="card-text">{{movie.overview|truncatechars:80}}</p>
-                        <a href="{% url 'movie:detail' movie.pk %}" class="btn mr-2"><i class="fas fa-link"></i> Detail</a>
+                        <a href="{% url 'movie:update' movie.pk %}" class="btn mr-2"><i class="fas fa-link"></i> Detail</a>
                         <!-- <a href="#" class="btn "><i class="fab fa-github"></i> Chat </a> -->
                     </div>
                 </div>

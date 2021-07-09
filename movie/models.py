@@ -3,30 +3,30 @@ from django.urls import reverse
 
 
 class TopMovies(models.Model):
-    poster_link = models.TextField(max_length=2000, blank=True, null=True)
-    series_title = models.TextField(max_length=300, blank=True, null=True)
+    poster_link = models.CharField(max_length=2000, blank=True, null=True)
+    series_title = models.CharField(max_length=300, blank=True, null=True)
     released_year = models.SmallIntegerField(blank=True, null=True)
-    certificate = models.TextField(max_length=25, blank=True, null=True)
-    runtime = models.TextField(max_length=10, blank=True, null=True)
-    genre = models.TextField(max_length=500, blank=True, null=True)
+    certificate = models.CharField(max_length=25, blank=True, null=True)
+    runtime = models.CharField(max_length=10, blank=True, null=True)
+    genre = models.CharField(max_length=500, blank=True, null=True)
     imdb_rating = models.DecimalField(
         max_digits=65535, decimal_places=1, blank=True, null=True)
     overview = models.TextField(max_length=313, blank=True, null=True)
     meta_score = models.SmallIntegerField(blank=True, null=True)
     director = models.CharField(max_length=250, blank=True, null=True)
-    star1 = models.TextField(max_length=250, blank=True, null=True)
-    star2 = models.TextField(max_length=250, blank=True, null=True)
-    star3 = models.TextField(max_length=250, blank=True, null=True)
-    star4 = models.TextField(max_length=250, blank=True, null=True)
+    star1 = models.CharField(max_length=250, blank=True, null=True)
+    star2 = models.CharField(max_length=250, blank=True, null=True)
+    star3 = models.CharField(max_length=250, blank=True, null=True)
+    star4 = models.CharField(max_length=250, blank=True, null=True)
     no_of_votes = models.IntegerField(blank=True, null=True)
-    gross = models.BigIntegerField(blank=True, null=True)
+    gross = models.IntegerField(blank=True, null=True)
 
     class Meta:
         managed = False
         db_table = 'Top_Movies'
 
     def get_absolute_url(self):
-        return reverse('movie-detail', kwargs={'pk': self.pk})
+        return reverse('movie:update', kwargs={'pk': self.pk})
 
 
 class ImdbMovies(models.Model):

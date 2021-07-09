@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'public_chat',
     'channels',
     'movie',
+    'crispy_forms',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
