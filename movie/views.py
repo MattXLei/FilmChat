@@ -29,9 +29,9 @@ class MovieListView(ListView):
         return object_list
 
 
-class MovieDetailView(DetailView):
-    model = TopMovies
-    template_name = "movies/movie_detail.html"
+# class MovieDetailView(DetailView):
+#     model = TopMovies
+#     template_name = "movies/movie_detail.html"
 
 
 class MovieUpdateView(LoginRequiredMixin, SuccessMessageMixin,  UpdateView):

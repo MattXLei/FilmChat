@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load crispy_forms_tags %}
 {% load mytag %}
 {% block content %}
 
@@ -69,7 +70,13 @@
             {% if forloop.first %}<div class="row">{% endif %}                      
             <div class="col-md-4">     
                 <div class="card" style="width: 18rem;">
+
+                  {% if movie.poster_path|length > 0 %}
+                    <img src="{{ movie.poster_path.url }}"  width='100' class="card-img-top" alt="...">  
+                  {% else %}
                     <img src="{{movie.poster_link}}" class="card-img-top" alt="...">
+                  {% endif %}
+                   
                     <div class="card-body">
                         <h5 class="card-title">{{movie.series_title}}</h5>
                         <h6 class="card-subtitle mb-2 text-muted">{{movie.certificate}}</h6>

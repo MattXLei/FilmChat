@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
-<!-- {% load crispy_forms_tags %} -->
+{% load crispy_forms_tags %}
 {% block content %}
 
 <style type="text/css">
@@ -54,13 +54,17 @@
 <div class="container card"  style="padding: 30px;" >
 
     <div class='d-flex align-items-center'> 
-        <span style="float:left; padding-right: 30px; "><img src="{{form.poster_link.value}}"  alt="..."></span>
+      {% if form.instance.poster_path|length > 0 %}
+          <span style="float:left; padding-right: 30px; "><img src="{{ form.instance.poster_path.url }}"  width='100'> </span>
+      {% else %}
+          <span style="float:left; padding-right: 30px; "><img src="{{form.poster_link.value}}"  alt="..."></span>
+      {% endif %}
         <span><h5> {{ form.series_title.value }}</h5>  </span>
     </div> 
 
     <hr style="  color:#dd2476;background-color:#dd2476; ">
 
-    <form method="POST">
+    <form method="POST" enctype="multipart/form-data"> 
         {% csrf_token  %}
         {{ form.errors }}
         {{ form.non_field_errors }}     
@@ -124,6 +128,14 @@
                     {{form.overview }}
                 </div>
             </div>    
+
+            <div class="form-group row">
+              <label for="" class="col-sm-2 col-form-label">Poster</label>
+              <div class="col-sm-10">
+                {{form.poster_path|as_crispy_field }}
+            </div>
+              
+            </div>
 
             <div class="form-group ">
                 <button class="btn btn-outline-info" type="submit">Update</button> 

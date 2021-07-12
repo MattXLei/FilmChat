@@ -2,6 +2,14 @@ from django.db import models
 from django.urls import reverse
 
 
+def get_default_poster_image():
+    return "defaultImage/logo_1080_1080.png"
+
+
+def get_poster_image_filepath(self, filename):
+    return f'movie_posters/{self.pk}/{filename}'
+
+
 class TopMovies(models.Model):
     poster_link = models.CharField(max_length=2000, blank=True, null=True)
     series_title = models.CharField(max_length=300, blank=True, null=True)
@@ -20,6 +28,8 @@ class TopMovies(models.Model):
     star4 = models.CharField(max_length=250, blank=True, null=True)
     no_of_votes = models.IntegerField(blank=True, null=True)
     gross = models.IntegerField(blank=True, null=True)
+    poster_path = models.ImageField(max_length=255, upload_to=get_poster_image_filepath,
+                                    null=True, blank=True, default=get_default_poster_image)
 
     class Meta:
         managed = False
