@@ -1,2 +1,22 @@
-*.pyc
 .vscode
+
+# Django #
+*.log
+*.pot
+*.pyc
+__pycache__
+db.sqlite3
+media
+
+# Environments 
+.env 
+.venv 
+
+# Backup files # 
+*.bak 
+
+
+# Python # 
+*.py[cod] 
+*$py.class
+
