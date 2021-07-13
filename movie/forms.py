@@ -5,8 +5,24 @@ from django.db.models.base import Model
 from .models import TopMovies
 
 
-class MovieForm(forms.ModelForm):
+class MovieCreateForm(forms.ModelForm):
+    series_title = forms.CharField(
+        widget=forms.TextInput(attrs={'size': '110px'}))
+    genre = forms.CharField(widget=forms.TextInput(attrs={'size': '110px'}))
+    overview = forms.CharField(
+        widget=forms.Textarea(attrs={'rows': 5, 'cols': 100}))
 
+    class Meta:
+        model = TopMovies
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper(self)
+        self.helper.form_show_labels = False
+
+
+class MovieUpdateForm(forms.ModelForm):
     genre = forms.CharField(widget=forms.TextInput(attrs={'size': '110px'}))
 
     overview = forms.CharField(
@@ -14,7 +30,7 @@ class MovieForm(forms.ModelForm):
 
     class Meta:
         model = TopMovies
-        # widgets = {'overview': forms.Textarea(attrs={'size': 120})}
+        # widgets = {'name': forms.TextInput(attrs={'size': '110px'})}
         # exclude = ('poster_link', )
         fields = '__all__'
 
