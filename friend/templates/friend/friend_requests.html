@@ -50,7 +50,7 @@
 		<div class="card flex-row flex-grow-1 p-2 mx-2 my-2 align-items-center">
 			<a class="profile-link" href="{% url 'account:view' user_id=request.sender.id %}">
 				<div class="card-image m-2">
-					<img class="img-fluid profile-image" src="{{request.sender.profile_image.url}}" alt="">
+					<img class="img-fluid profile-image" src="{{request.sender.profile_image.url}}" onerror="imgError(this);">
 				</div>
 			</a>
 			<a class="profile-link" href="{% url 'account:view' user_id=request.sender.id %}">
@@ -80,7 +80,11 @@
 </div>
 
 <script type="text/javascript">
-
+	function imgError(image) {
+        	image.onerror = "";
+        	image.src = "{% static 'defaultImage/dummy_image.png' %}";
+        	return true;
+    }
 	function onFriendRequestAccepted(){
 		location.reload();
 	}

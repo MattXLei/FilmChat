@@ -18,7 +18,7 @@ class TopMovies(models.Model):
     runtime = models.CharField(max_length=10, blank=True, null=True)
     genre = models.CharField(max_length=500, blank=True, null=True)
     imdb_rating = models.DecimalField(
-        max_digits=65535, decimal_places=1, blank=True, null=True)
+        max_digits=600, decimal_places=1, blank=True, null=True)
     overview = models.TextField(max_length=313, blank=True, null=True)
     meta_score = models.SmallIntegerField(blank=True, null=True)
     director = models.CharField(max_length=250, blank=True, null=True)
@@ -32,7 +32,7 @@ class TopMovies(models.Model):
                                     null=True, blank=True, default=get_default_poster_image)
 
     class Meta:
-        managed = False
+        # managed = False
         db_table = 'Top_Movies'
 
     def get_absolute_url(self):
@@ -65,7 +65,7 @@ class ImdbMovies(models.Model):
     reviews_from_critics = models.FloatField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        # managed = False
         db_table = 'imdb_movies'
 
 
@@ -78,7 +78,7 @@ class ImdbTitlePrincipals(models.Model):
     characters = models.TextField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        # managed = False
         db_table = 'imdb_title_principals'
 
 
@@ -102,5 +102,5 @@ class ImdbNames(models.Model):
     # children = models.IntegerField(blank=True, null=True)
 
     class Meta:
-        managed = False
+        # managed = False
         db_table = 'imdb_names'
