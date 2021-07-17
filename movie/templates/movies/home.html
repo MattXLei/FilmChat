@@ -61,8 +61,10 @@
 
   <form method="GET" >
         <input type="text" name="q" placeholder="Enter Keyword" value="{{ request.GET.q }}" >         
-        <button class="btn btn-outline-info" type="submit">Search</button> 
+        <button class="btn btn-outline-info" type="submit">Search</button>
+        <a href="{% url 'movie:create' %}" class="button btn" style="float: right;">Add A Movie</a>
   </form>
+  <!--<a href="{% url 'movie:create' %}" class="button btn" style="float: right;">Add A Movie</a>-->
   <br>
 
        

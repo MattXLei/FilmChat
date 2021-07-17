@@ -1,6 +1,8 @@
 from django.core.serializers.python import Serializer
 from django.core.paginator import Paginator
 from django.core.serializers import serialize
+import asyncio
+from asgiref.sync import sync_to_async
 
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
 from channels.db import database_sync_to_async
@@ -12,11 +14,12 @@ from datetime import datetime
 
 from public_chat.models import PublicChatRoom, PublicRoomChatMessage
 
-MSG_TYPE_MESSAGE = 0 # For standard messages with no errors
-
-DEFAULT_ROOM_CHAT_MESSAGE_PAGE_SIZE = 10
-
 User = get_user_model()
+"""Constants Below"""
+MSG_TYPE_MESSAGE = 0 # For standard messages with no errors
+MSG_TYPE_CONNECTED_USER_COUNT = 1 # For sending the connected user count
+DEFAULT_ROOM_CHAT_MESSAGE_PAGE_SIZE = 30 # 30 messages per chat loading
+
 
 # Example taken from:
 # https://github.com/andrewgodwin/channels-examples/blob/master/multichat/chat/consumers.py
@@ -154,6 +157,15 @@ class PublicChatConsumer(AsyncJsonWebsocketConsumer):
 			#"username": self.scope['user'].username
 		})
 
+		"""num_connected_users = get_num_connected_users(room)
+		await self.channel_layer.group_send(
+			room.group_name,
+			{
+				"type": "connected.user.count", # Connected_user_count
+				#"connected_user_count": num_connected_users,
+			}
+		)"""
+
 	async def leave_room(self, room_id): # Called by receive_json when someone sends a LEAVE command
 		print("PublicChatConsumer: leave_room")
 		is_auth = is_authenticated(self.scope['user'])
@@ -167,6 +179,15 @@ class PublicChatConsumer(AsyncJsonWebsocketConsumer):
 			room.group_name,
 			self.channel_name
 		)
+
+		"""num_connected_users = get_num_connected_users(room)
+		await self.channel_layer.group_send(
+			room.group_name,
+			{
+				"type": "connected.user.count", # Connected_user_count
+				"connected_user_count": num_connected_users,
+			}
+		)"""
 
 	async def handle_client_error(self, e): # Called when ClientError is raised; sends error data to UI
 		errorData = {}
@@ -191,10 +212,28 @@ class PublicChatConsumer(AsyncJsonWebsocketConsumer):
 
 		})
 
+	async def connected_user_count(self, event): # Makes payload of connected user amount and sends to the UI
+		print("PublicChatConsumer: connected_user_count: " + str(event['connected_user_count']))
+		await self.send_json({
+			"msg_type": MSG_TYPE_CONNECTED_USER_COUNT,
+			"connected_user_count": event['connected_user_count']
+		})
+
+
 def is_authenticated(user):
 	if user.is_authenticated:
 		return True
 	return False
+
+
+"""def get_num_connected_users(room): # Returns number of active users in the chat room
+	try:
+		if room.users:
+			print(room.users.filter())
+			return len(room.users.all())
+		return 0
+	except Exception as e:
+		print(e)"""
 
 @database_sync_to_async # Saves chat messages to database
 def create_public_room_chat_message(room, user, message):
@@ -268,6 +307,7 @@ class LazyRoomChatMessageEncoder(Serializer): # Convert stuff to JSON first
 	def get_dump_object(self, obj):
 		dump_object = {}
 		dump_object.update({'msg_type': MSG_TYPE_MESSAGE})
+		dump_object.update({'msg_id': str(obj.id)})
 		dump_object.update({'user_id': str(obj.user.id)})
 		dump_object.update({'username': str(obj.user.username)})
 		dump_object.update({'message': str(obj.content)})
