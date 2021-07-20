@@ -1,16 +1,18 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container">
+<div class="container" style = "background-color: #2F4F4F">
 	<!-- MEDIUM+ SCREEN -->
 	<div class="d-none d-md-flex flex-column">
-        <div class="card p-4 align-items-start">
-			<h3 class = "pb-4">Welcome to Matthew's Film Chat/Database Website!</h3>
-			<p class = "">Here You Can Chat With Others About Film Below, Access/Customize Your Profile by Clicking on your Profile Picture, Add Friends By Searching For Them, And Look Up/Add Films Using The Film Button At The Top!</p> <!--Customize with color, links, and maybe pictures to look better-->
+		<br>
+        <div class="card p-4 align-items-start" style = "background-color: black;">
+			<h3 class = "pb-4" style = "color: #D3D3D3;">Welcome to Matthew's Film Chat/Database Website!</h3>
+			<p style = "color: #D3D3D3">Here You Can Chat With Others About Film Below, Access/Customize Your Profile by Clicking on your Profile Picture, Add Friends By Searching For Them, And Look Up/Add Films Using The Film Button At The Top!</p> <!--Customize with color, links, and maybe pictures to look better-->
 		</div>
 		<br>
 
 		{% include 'public_chat/snippets/public_chat_room.html' with room_id=room_id %}
+		<br>
 	</div>
 	<!--END MEDIUM+ SCREENS-->
 

@@ -5,7 +5,7 @@
 
 <style type="text/css">
 	.image-container{
-		max-width: 250px;
+		max-width: 150px;
 		height: auto;
 	}
 	.field-heading{
@@ -64,38 +64,63 @@
 	.message-btn-text{
 		font-weight: 500;
 	}
+
+	.bcontent {
+		margin-top: 10px;
+	}
+
+	footer h4 {
+		display: inline;
+		margin-right: 1em;
+	}
+
+	.nottooleft {
+		
+  		padding-left: 20px;
+		border-radius: 25px;
+		
+	}
 </style>
 
-<div class="container-fluid">
+<div class= "container-fluid">
 	<div class="d-flex flex-row justify-content-center flex-wrap align-items-start">
 
-		<div class="card profile-card m-2">
-		  <div class="card-body">
-		  	<div class="d-flex flex-column justify-content-center p-4">
-		  		<div class="image-container mx-auto mb-4">
-		  			<img class="d-block border border-dark rounded-circle img-fluid mx-auto profile-image" alt="codingwithmitch logo" id="id_profile_image" src="{{profile_image}}">
+		<div class= "card profile-card m-2" style="width: 800px;background-color: gray;">
+		  <div class= "row no-gutters"> <!--"card-body">-->
+		  	<!--<div class= "d-flex flex-column justify-content-center p-4">-->
+		  		<div class= "p-3 image-container mx-auto">
+		  			<img class="d-block border border-dark rounded-circle img-fluid mx-auto profile-image mt-3 mb-1" onerror="imgError(this);" id="id_profile_image" src="{{profile_image}}" >
 		  		</div>
-		  		<p class="mt-4 mb-1 field-heading">Email</p>
-		  		{%  if is_self %}
-		  			<h5>{{email}}</h5>
-		  		{% else %}
-		  			{% if hide_email %}
-			  			<h5>**********</h5>
-			  		{% else %}
-			  			<h5>{{email}}</h5>
-			  		{% endif %}
-			  	{% endif %}
-		  		<p class="mt-4 mb-1 field-heading">Username</p>
-		  		<h5>{{username}}</h5>
 
-		  		<!-- If Auth user is viewing their own profile -->
-		  		{% if is_self %}
-		  		<a  class="mt-4 btn btn-primary" href="{% url 'account:edit' user_id=id %}">Update</a>
-				<div class="d-flex flex-column mt-4">
-					<a class="m-auto" href="{% url 'password_change' %}">Change password</a>
+
+				<div class="col-sm-4"> <!--This and below line (and /divs) were not here originally-->
+                    <div class="card-body">
+						<!--<p class="mb-1 field-heading">Username</p>-->
+						<h5 class="mt-3 mb-1 field-heading" style = "color: whitesmoke;font-size: 40px;">{{username}}</h5>
+						<p class="mt-3 mb-1 field-heading" style = "color: black;">Email</p> <!-- From here down to username h5 was tabbed twice-->
+						{%  if is_self %}
+							<h5 style = "color: #DCDCDC;">{{email}}</h5>
+						{% else %}
+							{% if hide_email %}
+								<h5 style = "color: #DCDCDC;">**********</h5>
+							{% else %}
+								<h5 style = "color: #DCDCDC;">{{email}}</h5>
+							{% endif %}
+						{% endif %}
+					</div>
 				</div>
-		  		{% endif %}
-		  	</div>
+				<div class="col-sm-4">
+					<div class = "card-body">
+						<!-- If Auth user is viewing their own profile; here down to endif was tabbed twice -->
+						{% if is_self %}
+							<div class = "mt-4 mb-1">
+								<h4><a class="btn btn-primary" href="{% url 'account:edit' user_id=id %}" style = "margin-bottom:5px;margin-left:45px;">Edit Profile</a></h4>
+								<br>
+								<h4><a class="flex-column m-auto" href="{% url 'password_change' %}" style = "color: whitesmoke">Change Password</a></h4>
+							</div>
+						{% endif %}
+					</div>
+				</div>
 		  </div>
 		</div>
 
@@ -186,11 +211,36 @@
 	</div>
 </div>
 
+<div class= "container-fluid">
+	<div class="d-flex flex-row justify-content-center flex-wrap align-items-start">
+
+		<div class= "card profile-card m-2" style="width: 1115px;background-color: #ABBAEA;">
+			<h5 class = "nottooleft" style = "color:black;width: 1000px;margin: auto; width: 101%; margin-top: 10px">Favorite Films</h5>
+			<hr>
+			<h2 style = "text-align: center;">Here I Want To Be Able To Search Movies With Dropdown...</h2>
+			<br>
+			<footer style = "text-align: center;"> <!-- Separate images using style border and padding-->
+				<h4 style = "border: 2px solid purple; padding-left: 5px; padding-right: 5px;">Movie 1</h4>
+				<h4 style = "border: 2px solid grey; padding-left: 5px; padding-right: 5px;">Movie 2</h4>
+				<h4 style = "border: 2px solid gold; padding-left: 5px; padding-right: 5px;">Movie 3</h4>
+				<h4 style = "border: 2px solid black; padding-left: 5px; padding-right: 5px;">Movie 4</h4>
+				<br>
+				<br>
+			</footer>
+		</div>
+	</div>
+</div>
+
 
 <script type="text/javascript">
 
 	// called from base_js.html
-	//preloadImage("{{profile_image|safe}}", 'id_profile_image')
+	preloadImage("{{profile_image|safe}}", 'id_profile_image')
+	function imgError(image) {
+        image.onerror = "";
+        image.src = "{% static 'defaultImage/dummy_image.png' %}";
+        return true;
+    }
 
 	function onFriendRequestSent(){
 		location.reload();
