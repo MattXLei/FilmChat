@@ -61,8 +61,10 @@
 
   <form method="GET" >
         <input type="text" name="q" placeholder="Enter Keyword" value="{{ request.GET.q }}" >         
-        <button class="btn btn-outline-info" type="submit">Search</button> 
+        <button class="btn btn-outline-info" type="submit">Search</button>
+        <a href="{% url 'movie:create' %}" class="button btn" style="float: right; position:absolute; right:140px;">Add A Movie</a>
   </form>
+  <!--<a href="{% url 'movie:create' %}" class="button btn" style="float: right;">Add A Movie</a>-->
   <br>
 
        
@@ -81,7 +83,7 @@
                         <h5 class="card-title">{{movie.series_title}}</h5>
                         <h6 class="card-subtitle mb-2 text-muted">{{movie.certificate}}</h6>
                         <p class="card-text">{{movie.overview|truncatechars:80}}</p>
-                        <a href="{% url 'movie:update' movie.pk %}" class="btn mr-2"><i class="fas fa-link"></i> Detail</a>
+                        <a href="{% url 'movie:update' movie.pk %}" class="btn mr-2"><i class="fas fa-link"></i> Details</a>
                         <!-- <a href="#" class="btn "><i class="fab fa-github"></i> Chat </a> -->
                     </div>
                 </div>
