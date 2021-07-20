@@ -6,7 +6,9 @@
 *.pyc
 __pycache__
 db.sqlite3
-media
+media/
+media_cdn/
+media_cdn/profile_images/
 
 # Environments 
 .env 
@@ -20,3 +22,5 @@ media
 *.py[cod] 
 *$py.class
 
+#local_db#
+local_db.py
