@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
-
+{% load crispy_forms_tags %}
+{% load mytag %}
 {% block content %}
 
 <style type="text/css">
@@ -50,19 +51,39 @@
 
 </style>
 
+
+
+
  
 <div class="container mx-auto mt-4">    
+
+
+
+  <form method="GET" >
+        <input type="text" name="q" placeholder="Enter Keyword" value="{{ request.GET.q }}" >         
+        <button class="btn btn-outline-info" type="submit">Search</button>
+        <a href="{% url 'movie:create' %}" class="button btn" style="float: right; position:absolute; right:140px;">Add A Movie</a>
+  </form>
+  <!--<a href="{% url 'movie:create' %}" class="button btn" style="float: right;">Add A Movie</a>-->
+  <br>
+
        
         {% for movie in movies %}       
             {% if forloop.first %}<div class="row">{% endif %}                      
             <div class="col-md-4">     
                 <div class="card" style="width: 18rem;">
+
+                  {% if movie.poster_path|length > 0 %}
+                    <img src="{{ movie.poster_path.url }}"  width='100' class="card-img-top" alt="...">  
+                  {% else %}
                     <img src="{{movie.poster_link}}" class="card-img-top" alt="...">
+                  {% endif %}
+                   
                     <div class="card-body">
                         <h5 class="card-title">{{movie.series_title}}</h5>
                         <h6 class="card-subtitle mb-2 text-muted">{{movie.certificate}}</h6>
                         <p class="card-text">{{movie.overview|truncatechars:80}}</p>
-                        <a href="{% url 'movie:detail' movie.pk %}" class="btn mr-2"><i class="fas fa-link"></i> Detail</a>
+                        <a href="{% url 'movie:update' movie.pk %}" class="btn mr-2"><i class="fas fa-link"></i> Details</a>
                         <!-- <a href="#" class="btn "><i class="fab fa-github"></i> Chat </a> -->
                     </div>
                 </div>
@@ -77,22 +98,22 @@
   <div style="text-align: center;">
     {% if is_paginated %}
     {% if page_obj.has_previous %}
-        <a class="btn btn-outline-info mb-4" href="?page=1">First</a>
-        <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+        <a class="btn btn-outline-info mb-4" href="?{% query_transform request page=1 %}">First</a>
+        <a class="btn btn-outline-info mb-4" href="?{% query_transform request page=page_obj.previous_page_number %}}">Previous</a>
     {% endif%}
     
     {% for num in page_obj.paginator.page_range %}
         {% if page_obj.number == num %}
-            <a class="btn btn-info mb-4" href="?page={{ num }}">{{ num }}</a>
+            <a class="btn btn-info mb-4" href="?{% query_transform request page=num %}">{{ num }}</a>
         {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
-            <a class="btn btn-outline-info mb-4" href="?page={{ num }}">{{ num }}</a>
+            <a class="btn btn-outline-info mb-4" href="?{% query_transform request page=num %}">{{ num }}</a>
         {% endif %}
     
     {% endfor %}
     
     {% if page_obj.has_next %}
-        <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.next_page_number }}">Next</a>
-        <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+        <a class="btn btn-outline-info mb-4" href="?{% query_transform request page=page_obj.next_page_number %}">Next</a>
+        <a class="btn btn-outline-info mb-4" href="?{% query_transform request page=page_obj.paginator.num_pages %}">Last</a>
     {% endif%}
     
     {% endif %}

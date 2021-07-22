@@ -19,7 +19,7 @@
 		content: none; 
 	}
 	.profile-link{
-		color: #000;
+		color: rgba(250, 250, 250, 0.8);
 	}
 	.material-icons{
 		font-size: 30px;
@@ -58,10 +58,11 @@
 					<h4 class="card-title">{{request.sender.username}}</h4>
 				</div>
 			</a>
-			<div class="d-flex flex-row card-right flex-grow-1 justify-content-end mx-2">
-	  			<span id="id_cancel_{{request.sender.id}}" class="decline-friend-request material-icons p-1" onclick='triggerDeclineFriendRequest("{{request.id}}")'>cancel</span>
-	  			<span id="id_confirm_{{request.sender.id}}" class="confirm-friend-request material-icons p-1" onclick='triggerAcceptFriendRequest("{{request.id}}")'>check</span>
-			</div>
+            <div class="d-flex flex-row card-right flex-grow-1 justify-content-end mx-2">
+                <span id="id_cancel_{{request.sender.id}}" class="decline-friend-request material-icons p-1" onclick='triggerDeclineFriendRequest("{{request.id}}")'>cancel</span>
+                <div></div>&nbsp;
+                <span id="id_confirm_{{request.sender.id}}" class="confirm-friend-request material-icons p-1" onclick='triggerAcceptFriendRequest("{{request.id}}")'>check</span>
+            </div>
 		</div>
 		{% if forloop.counter|divisibleby:2 %}
 		</div><div class="d-flex flex-row flex-wrap">

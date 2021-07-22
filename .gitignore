@@ -1,2 +1,26 @@
-*.pyc
 .vscode
+
+# Django #
+*.log
+*.pot
+*.pyc
+__pycache__
+db.sqlite3
+media/
+media_cdn/
+media_cdn/profile_images/
+
+# Environments 
+.env 
+.venv 
+
+# Backup files # 
+*.bak 
+
+
+# Python # 
+*.py[cod] 
+*$py.class
+
+#local_db#
+local_db.py
