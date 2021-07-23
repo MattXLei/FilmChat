@@ -30,6 +30,7 @@
 <body>
 
 {% include 'snippets/base_css.html' %}
+{% include 'snippets/movie_css.html' %}
 {% include 'snippets/base_js.html' %}
 {% include 'snippets/header.html' %}
 
@@ -79,6 +80,14 @@
 			spinner.style.display = "none"
 		}
 	}
+
+ 
+	$(document).ready(function(){
+		$('[data-toggle="tooltip"]').tooltip();
+	});
+
+
+  
 </script>
 
 </body>

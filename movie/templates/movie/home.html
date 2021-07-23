@@ -4,61 +4,9 @@
 {% load mytag %}
 {% block content %}
 
-<style type="text/css">
-
-:root {
-    --gradient: linear-gradient(to left top, #DD2476 10%, #FF512F 90%) !important;
-  }
-  
-  body {
-    background: #111 !important;
-  }
-  
-  .card {
-    background: #222;
-    border: 1px solid #dd2476;
-    color: rgba(250, 250, 250, 0.8);
-    margin-bottom: 2rem;
-  }
-
-  .card-img-top {
-    width: 100%;
-    max-height: 150px;
-    object-fit: contain;
-    padding: 25px 50px 0px;
-}
-  
-  .btn {
-    border: 5px solid;
-    border-image-slice: 1;
-    background: var(--gradient) !important;
-    -webkit-background-clip: text !important;
-    -webkit-text-fill-color: transparent !important;
-    border-image-source:  var(--gradient) !important; 
-    text-decoration: none;
-    transition: all .4s ease;
-  }
-  
-  .btn:hover, .btn:focus {
-        background: var(--gradient) !important;
-    -webkit-background-clip: none !important;
-    -webkit-text-fill-color: #fff !important;
-    border: 5px solid #fff !important; 
-    box-shadow: #222 1px 0 10px;
-    text-decoration: underline;
-  }
-
-
-</style>
-
-
-
-
+ 
  
 <div class="container mx-auto mt-4">    
-
-
-
   <form method="GET" >
         <input type="text" name="q" placeholder="Enter Keyword" value="{{ request.GET.q }}" >         
         <button class="btn btn-outline-info" type="submit">Search</button>
@@ -66,7 +14,14 @@
   </form>
   <!--<a href="{% url 'movie:create' %}" class="button btn" style="float: right;">Add A Movie</a>-->
   <br>
-
+  {% if messages %}
+  {% for message in messages %}
+  <div class="alert alert-{{ message.tags }}  d-flex justify-content-center">
+    {{ message|safe }}
+    <!-- {% if 'safe' in message.tags %}{{ message|safe }}{% else %}{{ message }}{% endif %} -->
+  </div>
+  {% endfor %}
+  {% endif %}
        
         {% for movie in movies %}       
             {% if forloop.first %}<div class="row">{% endif %}                      
@@ -83,8 +38,11 @@
                         <h5 class="card-title">{{movie.series_title}}</h5>
                         <h6 class="card-subtitle mb-2 text-muted">{{movie.certificate}}</h6>
                         <p class="card-text">{{movie.overview|truncatechars:80}}</p>
-                        <a href="{% url 'movie:update' movie.pk %}" class="btn mr-2"><i class="fas fa-link"></i> Details</a>
-                        <!-- <a href="#" class="btn "><i class="fab fa-github"></i> Chat </a> -->
+                        <div style='text-align: center;' >
+                          <a href="{% url 'movie:details' movie.pk %}" data-toggle="tooltip" data-placement="left" title='More details' > <img  src="{% static 'details.png' %}" width='30px' alt="Details">  </a>
+                          <a href="{% url 'movie:likeIt' movie.pk %}" data-toggle="tooltip" data-placement="right" title='Like' ><img  src="{% static 'like.png' %}" width='30px' alt="Like"> </a>
+                        </div>
+                        
                     </div>
                 </div>
             </div>

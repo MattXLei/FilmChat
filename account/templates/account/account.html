@@ -211,24 +211,40 @@
 	</div>
 </div>
 
-<div class= "container-fluid">
-	<div class="d-flex flex-row justify-content-center flex-wrap align-items-start">
+<br>
 
-		<div class= "card profile-card m-2" style="width: 1115px;background-color: #ABBAEA;">
-			<h5 class = "nottooleft" style = "color:black;width: 1000px;margin: auto; width: 101%; margin-top: 10px">Favorite Films</h5>
-			<hr>
-			<h2 style = "text-align: center;">Here I Want To Be Able To Search Movies With Dropdown...</h2>
-			<br>
-			<footer style = "text-align: center;"> <!-- Separate images using style border and padding-->
-				<h4 style = "border: 2px solid purple; padding-left: 5px; padding-right: 5px;">Movie 1</h4>
-				<h4 style = "border: 2px solid grey; padding-left: 5px; padding-right: 5px;">Movie 2</h4>
-				<h4 style = "border: 2px solid gold; padding-left: 5px; padding-right: 5px;">Movie 3</h4>
-				<h4 style = "border: 2px solid black; padding-left: 5px; padding-right: 5px;">Movie 4</h4>
-				<br>
-				<br>
-			</footer>
-		</div>
-	</div>
+<div class="container mx-auto">    
+	 
+
+	<h5 style="color: white;">Favorite Films</h5>
+	<hr>
+		 
+			{% for fm in movies %}       
+            {% if forloop.first %}<div class="row">{% endif %}                      
+          
+                <div class="card" style="width: 18rem;">
+
+                  {% if movie.poster_path|length > 0 %}
+                    <img src="{{ fm.movie.poster_path.url }}"  width='100' class="card-img-top" alt="...">  
+                  {% else %}
+                    <img src="{{ fm.movie.poster_link}}" class="card-img-top" alt="...">
+                  {% endif %}
+                   
+                    <div class="card-body">                      
+                      
+                        <div style='text-align: center;' >
+                          <a href="{% url 'movie:details' fm.movie.pk %}" data-toggle="tooltip" data-placement="left" title='More details' > <img  src="{% static 'details.png' %}" width='30px' alt="Details">  </a>
+                          <a href="{% url 'movie:UnlikeIt' fm.pk %}" data-toggle="tooltip" data-placement="right" title='UnLike' ><img  src="{% static 'negative.png' %}" width='30px' alt="UnLike"> </a>
+                        </div>
+                        
+                    </div>
+                </div>
+            
+            {% if forloop.counter|divisibleby:3 %}</div><div class="row">{% endif %}  
+            {% if forloop.last %}</div>{% endif %}
+        {% endfor %}
+		
+ 
 </div>
 
 
