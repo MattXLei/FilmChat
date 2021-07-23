@@ -1,3 +1,4 @@
+from movie.models import FavoriteMovies
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth import login, authenticate, logout
@@ -183,12 +184,16 @@ def account_view(request, *args, **kwargs):
             except:
                 pass
 
+        '''Add favorite movies'''
+        userMovies = FavoriteMovies.objects.filter(user=user)
+
         # Set the template variables to the values
         context['is_self'] = is_self
         context['is_friend'] = is_friend
         context['request_sent'] = request_sent
         context['friend_requests'] = friend_requests
         context['BASE_URL'] = settings.BASE_URL
+        context['movies'] = userMovies
         return render(request, "account/account.html", context)
 
 

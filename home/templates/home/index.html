@@ -1,16 +1,16 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container" style = "background-color: #2F4F4F">
+<div class="container" style = "background-color: black">
 	<!-- MEDIUM+ SCREEN -->
 	<div class="d-none d-md-flex flex-column">
 		<br>
-        <div class="card p-4 align-items-start" style = "background-color: black;">
-			<h3 class = "pb-4" style = "color: #D3D3D3;">Welcome to Matthew's Film Chat/Database Website!</h3>
-			<p style = "color: #D3D3D3">Here You Can Chat With Others About Film Below, Access/Customize Your Profile by Clicking on your Profile Picture, Add Friends By Searching For Them, And Look Up/Add Films Using The Film Button At The Top!</p> <!--Customize with color, links, and maybe pictures to look better-->
+        <div class="card p-4" style = "text-align: center;">
+			<h3 class = "pb-4" style = "color: rgba(250, 250, 250, 0.8);">Welcome to Matthew's Film Chat/Database Website!</h3>
+			<br>
+			<p style = "color: rgba(250, 250, 250, 0.8); ">Here You Can Chat With Others About Films Below, Access/Customize Your Profile by Clicking on your Profile Picture, Add Friends By Searching For Them, And Look Up/Add Films Using The Film Icon At The Top!</p>
 		</div>
 		<br>
-
 		{% include 'public_chat/snippets/public_chat_room.html' with room_id=room_id %}
 		<br>
 	</div>
@@ -18,7 +18,7 @@
 
 	<!-- SMALL SCREENS -->
 	<div class="d-flex d-md-none p-2">
-		<p>This site is not meant to be viewed on a mobile device.</p>
+		<p style = "color: grey">This site is not meant to be viewed on a mobile device.</p>
 	</div>
 	<!-- END SMALL SCREENS -->
 </div>

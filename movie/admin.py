@@ -1,16 +1,16 @@
 from django.contrib import admin
 
-from movie.models import TopMovies, ImdbMovies, ImdbNames, ImdbTitlePrincipals
+from movie.models import TopMovies
 
 
-class ImdbMoviesAdmin(admin.ModelAdmin):
-    list_filter = ['year', 'language']
-    list_display = ['imdb_title_id', 'title', 'country', 'language']
-    search_fields = ['imdb_title_id', 'title', 'year', ]
-    readonly_fields = ['imdb_title_id', ]
+# class ImdbMoviesAdmin(admin.ModelAdmin):
+#     list_filter = ['year', 'language']
+#     list_display = ['imdb_title_id', 'title', 'country', 'language']
+#     search_fields = ['imdb_title_id', 'title', 'year', ]
+#     readonly_fields = ['imdb_title_id', ]
 
-    class Meta:
-        model = ImdbMovies
+#     class Meta:
+#         model = ImdbMovies
 
 
 class TopMoviesAdmin(admin.ModelAdmin):
@@ -23,5 +23,5 @@ class TopMoviesAdmin(admin.ModelAdmin):
         model = TopMovies
 
 
-admin.site.register(ImdbMovies, ImdbMoviesAdmin)
+# admin.site.register(ImdbMovies, ImdbMoviesAdmin)
 admin.site.register(TopMovies, TopMoviesAdmin)

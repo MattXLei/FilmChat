@@ -6,7 +6,6 @@
         overflow-x: hidden;
         overflow-y: auto;
         padding: 10px;
-        background-color: #fff;
         font-size: 0.9em;
         flex-direction: column-reverse;
     }
@@ -58,7 +57,7 @@
 	.timestamp-span {
 		font-weight: 400;
 		font-size: 0.8em;
-		color: var(--secondary-text-color);
+		color: white; /*var(--secondary-text-color)*/
 	}
 
 	.timestamp-span:hover {
@@ -112,11 +111,11 @@ PUBLIC CHAT
                 </div>
             </div>
     
-            <div class="d-flex chat-log" id = "id_chat_log">
+            <div class="d-flex chat-log" id = "id_chat_log" style = "background-color: #111; color: white">
     
             </div>
             <div class="d-flex chat-message-input-container">
-                <textarea class="flex-grow-1 chat-message-input" id="id_chat_message_input" cols="150"></textarea>
+                <textarea class="flex-grow-1 chat-message-input" id="id_chat_message_input"></textarea>
                 <button class="btn btn-primary chat-message-submit-button">
                     <span id="id_chat_message_submit" class="material-icons">
                         send

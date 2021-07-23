@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %} 
+{% block content %}
+ 
+ 
+ 
+
+  <div class="container card"  style="padding: 30px;" >
+
+    <div class='d-flex align-items-center'> 
+      {% if object.poster_path.name %}    
+          <span style="float:left; padding-right: 30px; "><img src="{{ object.poster_path.url }}"  width='100'> </span>          
+      {% else %}
+        <span style="float:left; padding-right: 30px; "><img src="{{object.poster_link}}"  alt="..."></span>
+      {% endif %}
+        <span><h5> {{ object.series_title }}</h5>  </span>
+     
+    </div> 
+
+    <hr style="  color:#dd2476;background-color:#dd2476; ">
+              <div class="form-group row">                
+                <div   class="col-sm-2 text-label">Genre</div>
+                <div class="col-sm-4"> {{object.genre}}</div>
+            </div>             
+            <div class="form-group row">
+              <div   class="col-sm-2 text-label">Certificate</div>
+              <div class="col-sm-4">{{object.certificate}}</div>
+              <div   class="col-sm-2 text-label">Run Time</div>
+              <div class="col-sm-4">{{object.runtime}}</div>
+              
+            </div>     
+
+            <div class="form-group row">
+              <div   class="col-sm-2 text-label">IMDB Rating</div>
+                <div class="col-sm-4"> {{object.imdb_rating}}</div>
+                <div   class="col-sm-2 text-label">Meta Score</div>
+                <div class="col-sm-4">{{object.meta_score}}</div>
+            </div>
+         
+            
+            <div class="form-group row">              
+              <div   class="col-sm-2 text-label">No of Votes</div>
+                <div class="col-sm-4">{{object.no_of_votes|intcomma}}</div>
+                <div   class="col-sm-2 text-label">Gross</div>
+                <div class="col-sm-4"> 
+                  <div class="input-group">
+                    <div class="input-group-addon">$</div>
+                    {{object.gross|intcomma}}
+                    <div class="input-group-addon">.00</div>
+                 </div>  
+                </div>
+            </div>
+
+            <div class="form-group row">
+              <div   class="col-sm-2 text-label">Directors</div>
+                <div class="col-sm-4"> {{object.director}}</div>
+            </div>
+
+            <fieldset class="form-group">
+                <div class="row">
+                  <div   class="col-sm-2 text-label">Stars</div>
+                  <div class="col-sm-2">   {{object.star1}} </div> 
+                  <div class="col-sm-2">     {{object.star2}} </div>       
+                    <div class="col-sm-2">    {{object.star3}} </div> 
+                    <div class="col-sm-2">    {{object.star4}} </div> 
+                    
+                  </div> 
+            </fieldset>
+                 
+            <div class="form-group row">
+              <div   class="col-sm-2 text-label">Overview</div>
+                <div class="col-sm-10">
+                    {{object.overview }}
+                </div>
+            </div>    
+
+            <br>
+ 
+            <div class=" form-group text-center ">
+              <a href="{% url 'movie:home' %}" data-toggle="tooltip" data-placement="bottom" title='Back'><img  src="{% static 'previous.png' %}" width='40px' style="margin-right: 25px;" alt="Back" > </a>
+              <a href="{% url 'movie:update' object.pk %}" data-toggle="tooltip" data-placement="bottom" title='Edit'><img  src="{% static 'compose.png' %}" width='40px' style="margin-right: 25px;"alt="Edit"></a>
+              <a href="{% url 'movie:likeIt' object.pk %}" data-toggle="tooltip" data-placement="bottom" title='Like it' ><img  src="{% static 'like.png' %}" width='40px'   alt="Like"> </a>
+
+            </div>
+     
+
+
+</div>
+
+{% endblock content %}

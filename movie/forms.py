@@ -1,5 +1,7 @@
 from django import forms
 from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Layout
+from crispy_forms.bootstrap import PrependedText
 from django.db.models import fields
 from django.db.models.base import Model
 from .models import TopMovies
@@ -50,3 +52,5 @@ class MovieUpdateForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper(self)
         self.helper.form_show_labels = False
+        Layout('gross',
+               PrependedText('currency field', '$'))
