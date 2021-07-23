@@ -20,7 +20,7 @@
     }
 
     .friends-text {
-        color: #000;
+        color: rgba(250, 250, 250, 0.8);
         font-weight: 500;
     }
 
@@ -39,7 +39,7 @@
     }
 
     .profile-link {
-        color: #000;
+        color: rgba(250, 250, 250, 0.8);
     }
 
     .checkmark-icon {
@@ -49,7 +49,6 @@
     .cancel-icon {
         color: red;
     }
-	
 </style>
 
 <div class="container">
@@ -67,9 +66,9 @@
                 <a class="profile-link" href="{% url 'account:view' user_id=account.0.id %}">
                     <div class="card-center px-2">
                         <h4 class="card-title">{{account.0.username}}</h4>
-                        {% if account.1 %}
-                        <p class="card-text"><a href="#" onclick="createOrReturnPrivateChat('{{account.0.id}}')">Send a Message; TBD</a></p>
-                        {% endif %}
+                        <!--{% if account.1 %}
+                        <p class="card-text"><a href="#" onclick="createOrReturnPrivateChat('{{account.0.id}}')">Send a Message; Feature Doesn't Exist Yet</a></p>
+                        {% endif %}-->
 
                     </div>
                 </a>
