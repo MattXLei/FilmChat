@@ -7,7 +7,7 @@
 __pycache__
 db.sqlite3
 media/
-media_cdn/
+media_cdn/movie_posters/
 media_cdn/profile_images/
 
 # Environments 

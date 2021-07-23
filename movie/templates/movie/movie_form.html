@@ -1,57 +1,26 @@
 {% extends 'base.html' %}
 {% load static %}
 {% load crispy_forms_tags %}
+{% load humanize %} 
 {% block content %}
 
-<style type="text/css">
+ 
+ 
 
-    :root {
-        --gradient: linear-gradient(to left top, #DD2476 10%, #FF512F 90%) !important;
-      }
-      
-      body {
-        background: rgb(20, 20, 20) !important;
-      }
-      
-      .card {
-        background: #222;
-        border: 1px solid #dd2476;
-        color: rgba(250, 250, 250, 0.8);
-        margin-bottom: 2rem;
-      }
-    
-      .card-img-top {
-        width: 100%;
-        max-height: 150px;
-        object-fit: contain;
-        padding: 25px 50px 0px;
-    }
-      
-      .btn {
-        border: 5px solid;
-        border-image-slice: 1;
-        background: var(--gradient) !important;
-        -webkit-background-clip: text !important;
-        -webkit-text-fill-color: transparent !important;
-        border-image-source:  var(--gradient) !important; 
-        text-decoration: none;
-        transition: all .4s ease;
-      }
-      
-      .btn:hover, .btn:focus {
-            background: var(--gradient) !important;
-        -webkit-background-clip: none !important;
-        -webkit-text-fill-color: #fff !important;
-        border: 5px solid #fff !important; 
-        box-shadow: #222 1px 0 10px;
-        text-decoration: underline;
-      }
-    
-    
-    </style>
-  
 
 <div class="container card"  style="padding: 30px;" >
+
+  {% if messages %}
+  {% for message in messages %}
+  <div class="alert alert-{{ message.tags }}  d-flex justify-content-center">
+    {{ message|safe }}
+    <!-- {% if 'safe' in message.tags %}{{ message|safe }}{% else %}{{ message }}{% endif %} -->
+  </div>
+  {% endfor %}
+  {% endif %}
+
+
+
 
     <div class='d-flex align-items-center'> 
       {% if form.instance.poster_path|length > 0 %}
@@ -79,40 +48,44 @@
         {% endif %}
            
             <div class="form-group row">                
-                <label for="genre" class="col-sm-2 col-form-label">Genre</label>
+                <label for="genre" class="col-sm-2 text-label">Genre</label>
                 <div class="col-sm-4"> {{form.genre}}</div>
             </div>             
             <div class="form-group row">
-                <label for="certificate" class="col-sm-2 col-form-label">Certificate</label>
+                <label for="certificate" class="col-sm-2 text-label">Certificate</label>
                 <div class="col-sm-4">{{form.certificate}}</div>
-                <label for="runtime" class="col-sm col-form-label">Run Time</label>
+                <label for="runtime" class="col-sm text-label">Run Time</label>
                 <div class="col-sm-4">{{form.runtime}}</div>
               
             </div>     
 
             <div class="form-group row">
-                <label for="imdb_rating" class="col-sm-2 col-form-label">IMDB Rating</label>
+                <label for="imdb_rating" class="col-sm-2 text-label">IMDB Rating</label>
                 <div class="col-sm-4"> {{form.imdb_rating}}</div>
-                <label for="meta_score" class="col-sm-2 col-form-label">Meta Score</label>
+                <label for="meta_score" class="col-sm-2 text-label">Meta Score</label>
                 <div class="col-sm-4">{{form.meta_score}}</div>
             </div>
          
             
             <div class="form-group row">              
-                <label for="no_of_votes" class="col-sm-2 col-form-label">No of Votes</label>
-                <div class="col-sm-4">{{form.no_of_votes}}</div>
-                <label for="gross" class="col-sm-2 col-form-label">Gross</label>
-                <div class="col-sm-4"> {{form.gross}}</div>
+                <label for="no_of_votes" class="col-sm-2 text-label">No of Votes</label>
+                <div class="col-sm-4">{{ form.no_of_votes }}</div>
+                <label for="gross" class="col-sm-2 text-label">Gross</label>
+                <div class="col-sm-4"> <div class="input-group">
+                  <div class="input-group-addon">$</div>
+                  {{form.gross}}
+                  <div class="input-group-addon">.00</div>
+                </div> </div>
             </div>
 
             <div class="form-group row">
-                <label for="director" class="col-sm-2 col-form-label">Directors</label>
+                <label for="director" class="col-sm-2 text-label">Directors</label>
                 <div class="col-sm-4"> {{form.director}}</div>
             </div>
 
             <fieldset class="form-group">
                 <div class="row">
-                  <legend class="col-form-label col-sm-2">Stars</legend>
+                  <div class="text-label col-sm-2">Stars</div>
                   <div class="col-sm-10">                   
                         {{form.star1}} 
                         {{form.star2}}       
@@ -123,24 +96,31 @@
             </fieldset>
                  
             <div class="form-group row">
-                <label for="overview" class="col-sm-2 col-form-label">Overview</label>
+                <label for="overview" class="col-sm-2 text-label">Overview</label>
                 <div class="col-sm-10">
                     {{form.overview }}
                 </div>
             </div>    
 
             <div class="form-group row">
-              <label for="" class="col-sm-2 col-form-label">Poster</label>
+              <label for="" class="col-sm-2 text-label">Poster</label>
               <div class="col-sm-10">
-                {{form.poster_path|as_crispy_field }}
+                {{form.poster_path  }}
             </div>
               
             </div>
 
-            <div class="form-group ">
-                <button class="btn btn-outline-info" type="submit">Update</button> 
+            <!-- <div class="form-group ">
+                <button class="btn btn-outline-info" type="submit">Save</button> 
                 <a class="btn btn-outline-info" href="{% url 'movie:home' %}" role="button">Back</a>
+            </div> -->
+
+            <div class=" form-group text-center ">
+              <a href="{% url 'movie:home' %}" data-toggle="tooltip" data-placement="bottom" title='Cancel'><img  src="{% static 'previous.png' %}" width='40px' style="margin-right: 25px;" alt="Cancel" > </a>
+              <button class="btn mr-2" type="submit"><img  src="{% static 'save.png' %}" width='20px' style="margin-right: 5px;"alt="">Save</button>  
             </div>
+
+
     </form>
 
 </div>
