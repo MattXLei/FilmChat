@@ -10,18 +10,6 @@
 
 <div class="container card"  style="padding: 30px;" >
 
-  {% if messages %}
-  {% for message in messages %}
-  <div class="alert alert-{{ message.tags }}  d-flex justify-content-center">
-    {{ message|safe }}
-    <!-- {% if 'safe' in message.tags %}{{ message|safe }}{% else %}{{ message }}{% endif %} -->
-  </div>
-  {% endfor %}
-  {% endif %}
-
-
-
-
     <div class='d-flex align-items-center'> 
       {% if form.instance.poster_path|length > 0 %}
           <span style="float:left; padding-right: 30px; "><img src="{{ form.instance.poster_path.url }}"  width='100'> </span>
@@ -33,7 +21,7 @@
 
     <hr style="  color:#dd2476;background-color:#dd2476; ">
 
-    <form method="POST" enctype="multipart/form-data"> 
+    <form id='movie_form' method="POST" enctype="multipart/form-data"> 
         {% csrf_token  %}
         {{ form.errors }}
         {{ form.non_field_errors }}     
@@ -116,13 +104,14 @@
             </div> -->
 
             <div class=" form-group text-center ">
-              <a href="{% url 'movie:home' %}" data-toggle="tooltip" data-placement="bottom" title='Cancel'><img  src="{% static 'previous.png' %}" width='40px' style="margin-right: 25px;" alt="Cancel" > </a>
-              <button class="btn mr-2" type="submit"><img  src="{% static 'save.png' %}" width='20px' style="margin-right: 5px;"alt="">Save</button>  
+              <a href="{% url 'movie:home' %}" data-toggle="tooltip" data-placement="left" title='Cancel'><img  src="{% static 'previous.png' %}" width='40px' style="margin-right: 25px;" alt="Cancel" > </a>
+              <img id='save_btn' src="{% static 'save.png' %}" width='40px' data-toggle="tooltip" data-placement="right" title='Save'  > 
             </div>
 
 
     </form>
 
 </div>
+ 
 
 {% endblock content %}

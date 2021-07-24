@@ -1,0 +1,109 @@
+{% load static %}
+
+<!-- Header -->
+<div class="d-flex flex-column flex-lg-row p-3 px-md-4 mb-3 border-bottom shadow-sm" style = "background-color: rgba(146, 210, 253, 0.966)">
+
+    <!-- MEDIUM+ SCREENS -->
+    <div class="d-none d-md-flex flex-row my-auto flex-grow-1 align-items-center"  ;>
+        <h5 class="mr-3 font-weight-normal justify-content-start">
+            <!-- <a class="mt-2 p-1 btn btn-outline-primary" href="{% url 'home' %}">Home</a> -->
+            <a href="{% url 'home' %}"> <img src="{% static 'movie_chat2.png' %}" width="120px" > </a>
+        </h5>
+        <div></div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <form class="search-bar justify-content-start" onsubmit="return executeQuery();">
+            <input type="text" class="form-control" name="q" id="id_q_large" placeholder="Search a friend ...">
+        </form>
+
+		<div></div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		<div><a href="{% url 'movie:home'  %}" ><img  
+			src="{% static 'movies-icon-16.jpg' %}" alt="profile logo" width="40" height="40"></a></div>
+
+        <div class="d-flex flex-row-reverse flex-grow-1">
+            <nav class="">
+                {% if request.user.is_authenticated %}
+                <div class="dropdown dropleft show p-2">
+                    <div class="d-flex flex-row">
+
+                        <div class="btn-group dropleft">
+                            <div class="d-flex notifications-icon-container rounded-circle align-items-center mr-3" id="id_chat_notification_dropdown_toggle" data-toggle="dropdown" style = "color: white">
+                                <span id="id_chat_notifications_count" class="notify-badge"></span>
+                                <span class="d-flex material-icons notifications-material-icon m-auto align-items-center">chat</span>
+                                <div class="dropdown-menu scrollable-menu" aria-labelledby="id_chat_notification_dropdown_toggle" id="id_chat_notifications_container">
+
+                                </div>
+                            </div>
+                        </div>
+                        <div></div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <div class="btn-group dropleft">
+                            <div class="d-flex notifications-icon-container rounded-circle align-items-center mr-3" id="id_notification_dropdown_toggle" data-toggle="dropdown" onclick="setGeneralNotificationsAsRead()" style = "color: white">
+                                <span id="id_general_notifications_count" class="notify-badge"></span>
+                                <span class="d-flex material-icons notifications-material-icon m-auto align-items-center">notifications</span>
+                                <div class="dropdown-menu scrollable-menu" aria-labelledby="id_notification_dropdown_toggle" id="id_general_notifications_container">
+                                </div>
+                            </div>
+                        </div>
+                        <div></div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <a href="{% url 'account:view' user_id=request.user.id %}" id="myButton">
+                            <img class="account-image rounded-circle m-auto d-block" id="id_profile_links" src="{{request.user.profile_image.url}}" onerror="imgError(this);" width="50" height="50">
+
+                        </a>
+                        <div></div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <a class="btn btn-outline-primary" href="/logout">Logout</a>
+                    </div>
+
+                </div>
+                {% else %}
+                <a class="p-2" href="{% url 'login' %}" style = "color: grey">Login</a>
+                <a class="btn btn-outline-primary" href="/register">Register</a>
+                {% endif %}
+            </nav>
+        </div>
+    </div>
+    <!-- END MEDIUM+ SCREENS -->
+    <!-- SMALL SCREENS -->
+    <div class="d-flex d-md-none flex-column my-auto align-items-center">
+        <h5 class="font-weight-normal">
+            <a class="p-2" href="{% url 'home' %}" style = "color: white">Home</a>
+        </h5>
+        <form class="search-bar justify-content-start" onsubmit="return executeQuery();">
+            <input type="text" class="form-control" name="q" id="id_q_small" placeholder="Search...">
+        </form>
+        <div class="d-flex flex-row-reverse flex-grow-1">
+            <nav class="">
+                {% if request.user.is_authenticated %}
+                <div class="dropdown dropleft p-2 mt-2">
+                    <div class="d-flex flex-row">
+                        <div class="btn-group dropleft">
+                            <img class="account-image rounded-circle m-auto d-block" id="id_profile_links" rc="{{request.user.profile_image.url}}" alt="defaultImage" width="40" height="40">
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <a class="p-2" href="{% url 'login' %}" style = "color: grey">Login</a>
+                <a class="btn btn-outline-primary m-2" href="{% url 'register' %}">Register</a>
+                {% endif %}
+            </nav>
+        </div>
+    </div>
+    <!-- END SMALL SCREENS -->
+</div>
+
+
+<script type="text/javascript">
+    function imgError(image) {
+        image.onerror = "";
+        image.src = "{% static 'defaultImage/dummy_image.png' %}";
+        return true;
+    }
+
+    function executeQuery() {
+        var query = ""
+        query = document.getElementById('id_q_small').value;
+        if (query == "") {
+            query = document.getElementById('id_q_large').value;
+        }
+        window.location.replace("{% url 'search' %}?q=" + query)
+        return false
+    }
+
+</script>
