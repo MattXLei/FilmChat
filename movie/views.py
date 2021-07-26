@@ -40,7 +40,7 @@ class MovieUpdateView(LoginRequiredMixin, SuccessMessageMixin,  UpdateView):
     model = TopMovies
     form_class = MovieUpdateForm
     template_name = "movie/movie_form.html"
-    success_message = "Movie was updated successfully"
+    #success_message = "Movie was updated successfully"
 
 
 @login_required
@@ -53,8 +53,8 @@ def likeit(request, pk):
         messages.info(
             request,  f'"{movie.series_title}" is already in your favorite list.')
     else:
-        if len(FavoriteMovies.objects.filter(user=request.user)) >= 3:
-            messages.info(request,  'You can only have three favorite movies.')
+        if len(FavoriteMovies.objects.filter(user=request.user)) >= 4:
+            messages.info(request,  'You can only have four favorite movies.')
         else:
             FavoriteMovies(user=request.user, movie=movie).save()
             messages.success(

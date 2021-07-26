@@ -2,11 +2,49 @@
 {% load static %}
 {% load humanize %} 
 {% block content %}
- 
- 
- 
+<style type = "text/css">
+  @import url(//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css);
+  /* Ratings widget */
+  .rate {
+      display: inline-block;
+      border: 0;
+  }
+  /* Hide radio */
+  .rate > input {
+      display: none;
+  }
+  /* Order correctly by floating highest to the right */
+  .rate > label {
+      float: right;
+  }
+  /* The star of the show */
+  .rate > label:before {
+      display: inline-block;
+      font-size: 2rem;
+      padding: .3rem .2rem;
+      margin: 0;
+      cursor: pointer;
+      font-family: FontAwesome;
+      content: "\f005 "; /* full star */
+  }
 
-  <div class="container card"  style="padding: 30px;" >
+  /* Half star trick */
+  .rate .half:before {
+      content: "\f089 "; /* half star no outline */
+      position: absolute;
+      padding-right: 0;
+  }
+  /* Click + hover color */
+  input:checked ~ label, /* color current and previous stars on checked */
+  label:hover, label:hover ~ label { color: #73B100;  } /* color previous stars on hover */
+
+  /* Hover highlights */
+  input:checked + label:hover, input:checked ~ label:hover, /* highlight current and previous stars */
+  input:checked ~ label:hover ~ label, /* highlight previous selected stars for new rating */
+  label:hover ~ input:checked ~ label /* highlight previous selected stars */ { color: #A6E72D;  } 
+</style>
+
+<div class="container card"  style="padding: 30px;" >
 
     <div class='d-flex align-items-center'> 
       {% if object.poster_path.name %}    
@@ -14,78 +52,92 @@
       {% else %}
         <span style="float:left; padding-right: 30px; "><img src="{{object.poster_link}}"  alt="..."></span>
       {% endif %}
-        <span><h5> {{ object.series_title }}</h5>  </span>
-     
+        <span><h5><i> {{ object.series_title }} </i></h5>  </span>
+
+        <div></div>&nbsp;&nbsp;&nbsp;&nbsp;
+
+        <form action = "" method="get"> <!--Ratings from 1/2 star to a 5 star; SOMEHOW SAVE THIS INFO-->
+          <fieldset class="rate">
+            <input type="radio" id="rating10" name="rating" value="10" /><label for="rating10" title="5 stars"></label>
+            <input type="radio" id="rating9" name="rating" value="9" /><label class="half" for="rating9" title="4 1/2 stars"></label>
+            <input type="radio" id="rating8" name="rating" value="8" /><label for="rating8" title="4 stars"></label>
+            <input type="radio" id="rating7" name="rating" value="7" /><label class="half" for="rating7" title="3 1/2 stars"></label>
+            <input type="radio" id="rating6" name="rating" value="6" /><label for="rating6" title="3 stars"></label>
+            <input type="radio" id="rating5" name="rating" value="5" /><label class="half" for="rating5" title="2 1/2 stars"></label>
+            <input type="radio" id="rating4" name="rating" value="4" /><label for="rating4" title="2 stars"></label>
+            <input type="radio" id="rating3" name="rating" value="3" /><label class="half" for="rating3" title="1 1/2 stars"></label>
+            <input type="radio" id="rating2" name="rating" value="2" /><label for="rating2" title="1 star"></label>
+            <input type="radio" id="rating1" name="rating" value="1" /><label class="half" for="rating1" title="1/2 star"></label>
+        
+          </fieldset>
+        </form>
     </div> 
 
     <hr style="  color:#dd2476;background-color:#dd2476; ">
-              <div class="form-group row">                
-                <div   class="col-sm-2 text-label">Genre</div>
-                <div class="col-sm-4"> {{object.genre}}</div>
-            </div>             
-            <div class="form-group row">
-              <div   class="col-sm-2 text-label">Certificate</div>
-              <div class="col-sm-4">{{object.certificate}}</div>
-              <div   class="col-sm-2 text-label">Run Time</div>
-              <div class="col-sm-4">{{object.runtime}}</div>
-              
-            </div>     
+      <div class="form-group row">                
+          <div   class="col-sm-2 text-label">Genre</div>
+          <div class="col-sm-4"> {{object.genre}}</div>
+      </div>             
+      <div class="form-group row">
+        <div   class="col-sm-2 text-label">Certificate</div>
+        <div class="col-sm-4">{{object.certificate}}</div>
+        <div   class="col-sm-2 text-label">Run Time</div>
+        <div class="col-sm-4">{{object.runtime}}</div>
+        
+      </div>     
 
-            <div class="form-group row">
-              <div   class="col-sm-2 text-label">IMDB Rating</div>
-                <div class="col-sm-4"> {{object.imdb_rating}}</div>
-                <div   class="col-sm-2 text-label">Meta Score</div>
-                <div class="col-sm-4">{{object.meta_score}}</div>
-            </div>
+      <div class="form-group row">
+        <div   class="col-sm-2 text-label">IMDB Rating</div>
+          <div class="col-sm-4"> {{object.imdb_rating}}</div>
+          <div   class="col-sm-2 text-label">Meta Score</div>
+          <div class="col-sm-4">{{object.meta_score}}</div>
+      </div>
          
+      <div class="form-group row">              
+        <div   class="col-sm-2 text-label">No. of Votes</div>
+          <div class="col-sm-4">{{object.no_of_votes|intcomma}}</div>
+          <div   class="col-sm-2 text-label">Gross</div>
+          <div class="col-sm-4"> 
+            <div class="input-group">
+              <div class="input-group-addon">$</div>
+              {{object.gross|intcomma}}
+              <div class="input-group-addon">.00</div>
+            </div>  
+          </div>
+      </div>
+
+      <div class="form-group row">
+        <div   class="col-sm-2 text-label">Directors</div>
+          <div class="col-sm-4"> {{object.director}}</div>
+      </div>
+
+      <fieldset class="form-group">
+          <div class="row">
+            <div   class="col-sm-2 text-label">Stars</div>
+            <div class="col-sm-2">   {{object.star1}} </div> 
+            <div class="col-sm-2">     {{object.star2}} </div>       
+              <div class="col-sm-2">    {{object.star3}} </div> 
+              <div class="col-sm-2">    {{object.star4}} </div> 
+              
+            </div> 
+      </fieldset>
             
-            <div class="form-group row">              
-              <div   class="col-sm-2 text-label">No of Votes</div>
-                <div class="col-sm-4">{{object.no_of_votes|intcomma}}</div>
-                <div   class="col-sm-2 text-label">Gross</div>
-                <div class="col-sm-4"> 
-                  <div class="input-group">
-                    <div class="input-group-addon">$</div>
-                    {{object.gross|intcomma}}
-                    <div class="input-group-addon">.00</div>
-                 </div>  
-                </div>
-            </div>
+      <div class="form-group row">
+        <div   class="col-sm-2 text-label">Overview</div>
+          <div class="col-sm-10">
+              {{object.overview }}
+          </div>
+      </div>    
 
-            <div class="form-group row">
-              <div   class="col-sm-2 text-label">Directors</div>
-                <div class="col-sm-4"> {{object.director}}</div>
-            </div>
+      <br>
 
-            <fieldset class="form-group">
-                <div class="row">
-                  <div   class="col-sm-2 text-label">Stars</div>
-                  <div class="col-sm-2">   {{object.star1}} </div> 
-                  <div class="col-sm-2">     {{object.star2}} </div>       
-                    <div class="col-sm-2">    {{object.star3}} </div> 
-                    <div class="col-sm-2">    {{object.star4}} </div> 
-                    
-                  </div> 
-            </fieldset>
-                 
-            <div class="form-group row">
-              <div   class="col-sm-2 text-label">Overview</div>
-                <div class="col-sm-10">
-                    {{object.overview }}
-                </div>
-            </div>    
+      <div class=" form-group text-center ">
+        <a href="{% url 'movie:home' %}" data-toggle="tooltip" data-placement="bottom" title='Back'><img  src="{% static 'previous.png' %}" width='40px' style="margin-right: 25px;" alt="Back" > </a>
+        <a href="{% url 'movie:update' object.pk %}" data-toggle="tooltip" data-placement="bottom" title='Edit'><img  src="{% static 'compose.png' %}" width='40px' style="margin-right: 25px;"alt="Edit"></a>
+        <a href="{% url 'movie:likeIt' object.pk %}" data-toggle="tooltip" data-placement="bottom" title='Like it' ><img  src="{% static 'like.png' %}" width='40px'   alt="Like"> </a>
 
-            <br>
- 
-            <div class=" form-group text-center ">
-              <a href="{% url 'movie:home' %}" data-toggle="tooltip" data-placement="bottom" title='Back'><img  src="{% static 'previous.png' %}" width='40px' style="margin-right: 25px;" alt="Back" > </a>
-              <a href="{% url 'movie:update' object.pk %}" data-toggle="tooltip" data-placement="bottom" title='Edit'><img  src="{% static 'compose.png' %}" width='40px' style="margin-right: 25px;"alt="Edit"></a>
-              <a href="{% url 'movie:likeIt' object.pk %}" data-toggle="tooltip" data-placement="bottom" title='Like it' ><img  src="{% static 'like.png' %}" width='40px'   alt="Like"> </a>
-
-            </div>
-     
-
-
+      </div>
+    </div> 
 </div>
 
 {% endblock content %}

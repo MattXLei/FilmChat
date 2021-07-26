@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth import login, authenticate, logout
 from django.conf import settings
+from django.contrib.auth.decorators import login_required
 
 from django.core.files.storage import default_storage
 from django.core.files.storage import FileSystemStorage
@@ -119,7 +120,7 @@ def get_redirect_if_exists(request):
             redirect = str(request.GET.get("next"))
     return redirect
 
-
+@login_required
 def account_view(request, *args, **kwargs):
     """
     - Logic here is kind of tricky
@@ -185,7 +186,7 @@ def account_view(request, *args, **kwargs):
                 pass
 
         '''Add favorite movies'''
-        userMovies = FavoriteMovies.objects.filter(user=user)
+        userMovies = FavoriteMovies.objects.filter(user=user_id)
 
         # Set the template variables to the values
         context['is_self'] = is_self
@@ -269,7 +270,7 @@ def edit_account_view(request, *args, **kwargs):
     user_id = kwargs.get("user_id")
     account = Account.objects.get(pk=user_id)
     if account.pk != request.user.pk:
-        return HttpResponse("You cannot edit someone elses profile.")
+        return HttpResponse("You cannot edit someone else's profile.")
     context = {}
     if request.POST:
         form = AccountUpdateForm(
@@ -279,14 +280,14 @@ def edit_account_view(request, *args, **kwargs):
             return redirect("account:view", user_id=account.pk)
         else:
             form = AccountUpdateForm(request.POST, instance=request.user,
-                                     initial={
-                                         "id": account.pk,
-                                         "email": account.email,
-                                         "username": account.username,
-                                         "profile_image": account.profile_image,
-                                         "hide_email": account.hide_email,
-                                     }
-                                     )
+                initial={
+                    "id": account.pk,
+                    "email": account.email,
+                    "username": account.username,
+                    "profile_image": account.profile_image,
+                    "hide_email": account.hide_email,
+                }
+            )
             context['form'] = form
     else:
         form = AccountUpdateForm(

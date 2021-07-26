@@ -47,7 +47,7 @@ class FavoriteMovies (models.Model):
         TopMovies, on_delete=models.CASCADE)
 
     class Meta:
-        managed = False
+        # managed = False
         db_table = "favorite_movies"
         unique_together = ("user", "movie")
 

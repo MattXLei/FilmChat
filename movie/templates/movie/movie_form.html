@@ -4,9 +4,6 @@
 {% load humanize %} 
 {% block content %}
 
- 
- 
-
 
 <div class="container card"  style="padding: 30px;" >
 
@@ -18,10 +15,7 @@
   </div>
   {% endfor %}
   {% endif %}
-
-
-
-
+  
     <div class='d-flex align-items-center'> 
       {% if form.instance.poster_path|length > 0 %}
           <span style="float:left; padding-right: 30px; "><img src="{{ form.instance.poster_path.url }}"  width='100'> </span>
