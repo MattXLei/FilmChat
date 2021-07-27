@@ -42,7 +42,7 @@
 		content: none; 
 	}
 	.card{
-		border-radius: 12px;
+		border-radius: 6px;
 	}
 	.material-icons{
 		font-size: 30px;
@@ -81,6 +81,14 @@
 		border-radius: 25px;
 		
 	}
+
+	.pull-left{
+		float: left;
+	}
+
+	/*.row{
+		display: table;
+	}*/
 </style>
 
 <div class= "container-fluid">
@@ -216,35 +224,33 @@
 
 <div class="container mx-auto" style = "position:relative; left:65px;">
 	<h5 style = "color: rgba(250, 250, 250, 0.8);">Favorite Films</h2>
-	<hr color = "lightgrey" width="980px" align = "left">
+	<hr color = "lightgrey" width="975px" align = "left">
 	<div style = "padding-left: 10px">
 		{% if request.user.is_authenticated %}
 			{% for fm in movies %}       
-				{% if forloop.first %}<div class="row">{% endif %}                      
+				{% if forloop.first %}<div class="row">{% endif %}
 				
-				<div class="card" style="width: 15rem;">
-
-					{% if fm.poster_path|length > 0 %}
-						<img src="{{ fm.movie.poster_path.url }}"  width='100' class="card-img-top" alt="...">  
+				<div class="card" style="width: 12rem;">
+					{% if fm.movie.poster_path|length > 0 %}
+						<img src="{{ fm.movie.poster_path.url }}" style="width:100%" height = "1000 px" class="card-img-top" alt="...">  
 					{% else %}
 						<img src="{{ fm.movie.poster_link}}" class="card-img-top" alt="...">
 					{% endif %}
-					
-					<div class="card-body">                      
+				
+					<div class="card-body">           
 						
 						<div style='text-align: center;' >
 							<a href="{% url 'movie:details' fm.movie.pk %}" data-toggle="tooltip" data-placement="left" title='More Details' > <img  src="{% static 'details.png' %}" width='30px' alt="Details">  </a>
 							{% if is_self %}
-								<a href="{% url 'movie:UnlikeIt' fm.pk %}" data-toggle="tooltip" data-placement="right" title='Unlike' ><img  src="{% static 'negative.png' %}" width='30px' alt="Unlike"> </a>
+								<a href="{% url 'movie:UnlikeIt' fm.pk %}" data-toggle="tooltip" data-placement="right" title='Unfavorite' ><img  src="{% static 'negative.png' %}" width='30px' alt="Unfavorite"> </a>
 							{% endif %}
 						</div>
 						
 					</div>
 				</div>
-				
-				{% if forloop.counter|divisibleby:4 %}</div><div class="row">{% endif %}  
+				{% if forloop.counter|divisibleby:5 %}</div><div class="row">{% endif %}  
 				{% if forloop.last %}</div>{% endif %}
-				<div></div>&nbsp;&nbsp;
+				<div></div>&nbsp;
 			{% endfor %}
 		{% endif %}
 	</div>

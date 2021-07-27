@@ -6,9 +6,7 @@
 	<div class="d-none d-md-flex flex-column">
 		<br>
         <div class="card p-4" style = "text-align: center;">
-			<h3 class = "pb-4" style = "color: rgba(250, 250, 250, 0.8);">Welcome to Matthew's Film Chat/Database Website!</h3>
-			<br>
-			<p style = "color: rgba(250, 250, 250, 0.8); ">Here You Can Chat With Others About Films Below, Access/Customize Your Profile by Clicking on your Profile Picture, Add Friends By Searching For Them, And Look Up/Add Films Using The Film Icon At The Top!</p>
+			<h1>Welcome to Matthew's Film Chat/Database Website!</h1>
 		</div>
 		<br>
 		{% include 'public_chat/snippets/public_chat_room.html' with room_id=room_id %}
@@ -24,3 +22,16 @@
 </div>
 
 {% endblock content %}
+
+<!--
+				{% for movie in movies %}
+					{% if forloop.first %}<div class="row">{% endif %}                      
+					<div class="col-md-4">
+		
+						{% if movie.poster_path|length > 0 %}
+							<a href="{% url 'movie:details' movie.pk %}" data-toggle="tooltip" data-placement="left" title='More details' ><img src="{{ movie.poster_path.url }}"  width='100' class="card-img-top" alt="...">  </a>
+						{% else %}
+							<a href="{% url 'movie:details' movie.pk %}" data-toggle="tooltip" data-placement="left" title='More details' ><img src="{{movie.poster_link}}" class="card-img-top" alt="..."> </a>
+						{% endif %}
+					</div>
+				{% endfor %}-->
