@@ -16,7 +16,7 @@
 
     <hr style="  color:#dd2476;background-color:#dd2476; ">
 
-    <form method="POST">
+    <form method="POST" id='movie_create_form'>
         {% csrf_token  %}
         {{ form.errors }}
         {{ form.non_field_errors }}     
@@ -87,12 +87,24 @@
                     {{form.overview }}
                 </div>
             </div>    
+ 
 
-            <div class="form-group ">
-                <button class="btn btn-outline-info" type="submit">Save</button> 
-                <button class="btn btn-outline-info" type="reset">Reset</button> 
-                <a class="btn btn-outline-info" href="{% url 'movie:home' %}" role="button">Back</a>
-            </div>
+            <div class="row">
+                <div class="col text-right">
+                  <a href="{% url 'movie:home' %}" data-toggle="tooltip" data-placement="bottom" title='Back'><img  src="{% static 'previous.png' %}" width='40px' style="margin-right: 25px;" alt="Back" > </a>
+                </div>
+                <div class="col text-center">
+                    <input type="submit" id="create_btn" style="display:none;"/>
+                  <img src="{% static 'save.png' %}" width='40px' alt="Save" data-toggle="tooltip" data-placement="bottom" title='Save' onclick="document.getElementById('create_btn').click();">
+                </div>
+                <div class="col text-left">
+                   <input type="reset" id="reset_btn" style="display:none;"/>
+                   <img   src="{% static 'reset.png' %}" width='40px'  alt="reset" data-toggle="tooltip" data-placement="bottom" title='Reset' onclick="document.getElementById('reset_btn').click();" >
+                    
+                </div>
+              </div>    
+
+
     </form>
 
 </div>

@@ -1,8 +1,8 @@
 {% load static %}
 
 <!-- Header -->
-<nav class="navbar navbar-expand-lg navbar-light bg-light " >
-    <a class="navbar-brand" href="{% url 'home' %}"><img src="{% static 'movie_chat2.png' %}" width="120px" ></a>
+<nav class="navbar navbar-expand-lg " >
+    <a class="navbar-brand" href="{% url 'home' %}"><img src="{% static 'logo.png' %}" width="150px" ></a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -13,7 +13,7 @@
         <a class="nav-item nav-link" href="#">Chat</a>       
       </div>
       <form class="form-inline my-2 my-lg-0" onsubmit="return executeQuery();" >                          
-            <input class="form-control mr-sm-2" name="q" id="id_q" type="search" placeholder="Search a friend..." aria-label="Search" >     
+            <input class="form-control mr-sm-2" name="q" id="id_q" type="search" placeholder="Search a friend..." aria-label="Search" >               
       </form>
       <div class="navbar-nav ml-auto">                   
             {% if request.user.is_authenticated %}

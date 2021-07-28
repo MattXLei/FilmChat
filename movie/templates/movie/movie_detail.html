@@ -76,13 +76,22 @@
             </div>    
 
             <br>
- 
-            <div class=" form-group text-center ">
-              <a href="{% url 'movie:home' %}" data-toggle="tooltip" data-placement="bottom" title='Back'><img  src="{% static 'previous.png' %}" width='40px' style="margin-right: 25px;" alt="Back" > </a>
-              <a href="{% url 'movie:update' object.pk %}" data-toggle="tooltip" data-placement="bottom" title='Edit'><img  src="{% static 'compose.png' %}" width='40px' style="margin-right: 25px;"alt="Edit"></a>
-              <a href="{% url 'movie:likeIt' object.pk %}" data-toggle="tooltip" data-placement="bottom" title='Like it' ><img  src="{% static 'like.png' %}" width='40px'   alt="Like"> </a>
 
-            </div>
+            <div class="row">
+              <div class="col text-right">
+                <a href="{% url 'movie:home' %}" data-toggle="tooltip" data-placement="bottom" title='Back'><img  src="{% static 'previous.png' %}" width='40px' style="margin-right: 25px;" alt="Back" > </a>
+              </div>
+              <div class="col text-center">
+                <a href="{% url 'movie:update' object.pk %}" data-toggle="tooltip" data-placement="bottom" title='Edit'><img  src="{% static 'compose.png' %}" width='40px' style="margin-right: 25px;"alt="Edit"></a>
+              </div>
+              <div class="col text-left">
+                <a href="{% url 'movie:likeIt' object.pk %}" data-toggle="tooltip" data-placement="bottom" title='Like it' ><img  src="{% static 'like.png' %}" width='40px'   alt="Like"> </a>
+              </div>
+            </div>      
+
+           <br>
+
+
      
 
 

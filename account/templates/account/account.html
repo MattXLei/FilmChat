@@ -223,24 +223,27 @@
 		 
 			{% for fm in movies %}       
             {% if forloop.first %}<div class="row">{% endif %}                      
-          
-                <div class="card" style="width: 18rem;">
+				<div class="col-md-4">   
+					<div class="card" style="width: 18rem;">
 
-                  {% if movie.poster_path|length > 0 %}
-                    <img src="{{ fm.movie.poster_path.url }}"  width='100' class="card-img-top" alt="...">  
-                  {% else %}
-                    <img src="{{ fm.movie.poster_link}}" class="card-img-top" alt="...">
-                  {% endif %}
-                   
-                    <div class="card-body">                      
-                      
-                        <div style='text-align: center;' >
-                          <a href="{% url 'movie:details' fm.movie.pk %}" data-toggle="tooltip" data-placement="left" title='More details' > <img  src="{% static 'details.png' %}" width='30px' alt="Details">  </a>
-                          <a href="{% url 'movie:UnlikeIt' fm.pk %}" data-toggle="tooltip" data-placement="right" title='UnLike' ><img  src="{% static 'negative.png' %}" width='30px' alt="UnLike"> </a>
-                        </div>
-                        
-                    </div>
-                </div>
+						{% if fm.movie.poster_path|length > 0 %}
+						  <img src="{{ fm.movie.poster_path.url }}"  width='100' class="card-img-top" alt="...">  
+						{% else %}
+						  <img src="{{ fm.movie.poster_link}}" class="card-img-top" alt="...">
+						{% endif %}
+						 
+						  <div class="card-body">                      
+							
+							  <div style='text-align: center;' >
+								<a href="{% url 'movie:details' fm.movie.pk %}" data-toggle="tooltip" data-placement="left" title='More details' > <img  src="{% static 'details.png' %}" width='30px' alt="Details">  </a>
+								<a href="{% url 'movie:UnlikeIt' fm.pk %}" data-toggle="tooltip" data-placement="right" title='UnLike' ><img  src="{% static 'negative.png' %}" width='30px' alt="UnLike"> </a>
+							  </div>
+							  
+						  </div>
+					  </div>
+
+				</div>
+               
             
             {% if forloop.counter|divisibleby:3 %}</div><div class="row">{% endif %}  
             {% if forloop.last %}</div>{% endif %}

@@ -185,7 +185,8 @@ def account_view(request, *args, **kwargs):
                 pass
 
         '''Add favorite movies'''
-        userMovies = FavoriteMovies.objects.filter(user=user)
+
+        userMovies = FavoriteMovies.objects.filter(user=account)
 
         # Set the template variables to the values
         context['is_self'] = is_self

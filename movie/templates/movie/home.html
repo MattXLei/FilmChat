@@ -4,9 +4,8 @@
 {% load mytag %}
 {% block content %}
 
- 
- 
-<div class="container mx-auto mt-4">    
+  
+<div class="container mx-auto ">    
   <form method="GET" >
         <input type="text" name="q" placeholder="Enter Keyword" value="{{ request.GET.q }}" >         
         <button class="btn btn-outline-info" type="submit">Search</button>
@@ -21,10 +20,10 @@
     <!-- {% if 'safe' in message.tags %}{{ message|safe }}{% else %}{{ message }}{% endif %} -->
   </div>
   {% endfor %}
-  {% endif %}
+  {% endif %}  
        
         {% for movie in movies %}       
-            {% if forloop.first %}<div class="row">{% endif %}                      
+            {% if forloop.first %}<div class="row ">{% endif %}                      
             <div class="col-md-4">     
                 <div class="card" style="width: 18rem;">
 
@@ -36,14 +35,22 @@
                    
                     <div class="card-body">
                         <h5 class="card-title">{{movie.series_title}}</h5>
-                        <h6 class="card-subtitle mb-2 text-muted">{{movie.certificate}}</h6>
                         <p class="card-text">{{movie.overview|truncatechars:80}}</p>
-                        <div style='text-align: center;' >
-                          <a href="{% url 'movie:details' movie.pk %}" data-toggle="tooltip" data-placement="left" title='More details' > <img  src="{% static 'details.png' %}" width='30px' alt="Details">  </a>
-                          <a href="{% url 'movie:likeIt' movie.pk %}" data-toggle="tooltip" data-placement="right" title='Like' ><img  src="{% static 'like.png' %}" width='30px' alt="Like"> </a>
-                        </div>
-                        
                     </div>
+                    
+                    <div class="row">
+                      <div class="col text-right">
+                        <a href="{% url 'movie:details' movie.pk %}"   > 
+                          <img  src="{% static 'details.png' %}" width='30px'  alt="Details" data-toggle="tooltip" data-placement="left" title='More details' /> 
+                        </a>
+                      </div>
+                      <div class="col text-left">
+                        <a href="{% url 'movie:likeIt' movie.pk %}" >
+                          <img  src="{% static 'like.png' %}" width='30px' alt="Like" data-toggle="tooltip" data-placement="right" title='Like' /> 
+                        </a>
+                      </div>
+                    </div>      
+
                 </div>
             </div>
             {% if forloop.counter|divisibleby:3 %}</div><div class="row">{% endif %}  
