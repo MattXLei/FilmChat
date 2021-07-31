@@ -66,9 +66,9 @@
                 <a class="profile-link" href="{% url 'account:view' user_id=account.0.id %}">
                     <div class="card-center px-2">
                         <h4 class="card-title">{{account.0.username}}</h4>
-                        <!--{% if account.1 %}
-                        <p class="card-text"><a href="#" onclick="createOrReturnPrivateChat('{{account.0.id}}')">Send a Message; Feature Doesn't Exist Yet</a></p>
-                        {% endif %}-->
+                        {% if account.1 %}
+                        <p class="card-text"><a href="#" onclick="createOrReturnPrivateChat('{{account.0.id}}')">Send a Message</a></p>
+                        {% endif %}
 
                     </div>
                 </a>
