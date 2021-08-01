@@ -112,6 +112,12 @@
 <script type="text/javascript">
 	setupChatDropdownHeader()
 
+    function imgError(image) {
+        image.onerror = "";
+        image.src = "{% static 'defaultImage/dummy_image.png' %}";
+        return true;
+    }
+
 	function executeQuery() {
 		var query = ""
 		query = document.getElementById('id_q_small').value;

@@ -68,8 +68,8 @@
 		word-break: break-all;
 	}
 	.profile-image{
-		width: 33px;
-		height: 33px;
+		width: 40px;
+		height: 40px;
 		margin-top: 0px;
 		margin-bottom: auto;
 	}
@@ -117,7 +117,7 @@
 				<div class="d-flex flex-row align-items-center card-header" id="id_room_title">
 				<a class="d-flex flex-row" target="_blank" id="id_user_info_container">
 					<img class="profile-image rounded-circle img-fluid" id="id_other_user_profile_image" src="{% static 'defaultImage/dummy_image.png' %}">
-					<h3 class="ml-2" id="id_other_username"></h3>
+					<h3 class="ml-3" id="id_other_username"></h3>
 				</a>
 				
 				</div>
@@ -129,15 +129,16 @@
 								<span class="sr-only">Loading...</span>
 							</div>
 						</div>
-						<div class="d-flex chat-log" id="id_chat_log">
-							
+						<div class="d-flex chat-log" id = "id_chat_log" style = "background-color: #111; color: white">
+    
 						</div>
 						<span class="{% if not debug %}d-none{% endif %} page-number" id="id_page_number">1</span>
 						
-						<div class="d-flex flex-row chat-message-input-container">
-							<textarea class="flex-grow-1 chat-message-input" id="id_chat_message_input"></textarea>
+						<div class="d-flex chat-message-input-container">
+							<textarea class="flex-grow-1 chat-message-input" id="id_chat_message_input" style="width:100%"></textarea>
 							<button class="btn btn-primary chat-message-submit-button">
-								<span id="id_chat_message_submit" class="material-icons">send
+								<span id="id_chat_message_submit" class="material-icons">
+									send
 								</span>
 							</button>
 						</div>
@@ -220,12 +221,13 @@
 		}
 	}
 
-	function setupWebSocket(room_id) {
+	function setupWebSocket(room_id){
+
 		console.log("setupWebSocket: " + room_id)
 
 		roomId = room_id
 
-		//Close Previous Socket
+		// close previous socket if one is open
 		closeWebSocket()
 
 		// Correctly decide between ws:// and wss://
@@ -235,35 +237,49 @@
 		{% else %}
 			var ws_path = ws_scheme + '://' + window.location.host + ":8001/chat/" + roomId + "/"; // production
 		{% endif %}
+
+
+		// console.log("Connecting to " + ws_path);
 		chatSocket = new WebSocket(ws_path);
 
 		// Handle incoming messages
 		chatSocket.onmessage = function(message) {
-			console.log("Got chat websocket message " + message.data);
+			// Decode the JSON
+			// console.log("Got chat websocket message " + message.data);
+			console.log("Got websocket message.");
 			var data = JSON.parse(message.data);
 
 			// display the progress bar?
-			displayChatroomLoadingSpinner(data.display_progress_bar)
+			//displayChatroomLoadingSpinner(data.display_progress_bar)
 
 			// Handle errors (ClientError)
 			if (data.error) {
 				console.error(data.error + ": " + data.message)
-				//showClientErrorModal(data.message)
 				return;
 			}
 			// Handle joining (Client perspective)
 			if (data.join) {
-				console.log("Joining public room " + data.join);
-				//getRoomChatMessages()
+				console.log("Joining room " + data.join);
+				getUserInfo()
+			}
+			// Handle leaving (client perspective)
+			if (data.leave) {
+				// do nothing
+				console.log("Leaving room " + data.leave);
 			}
 
-			if (data.leave) {
-				console.log("Leaving room: " + data.leave)
+			// user info coming in from backend
+			if(data.user_info){
+				handleUserInfoPayload(data.user_info)
+			}
+
+			if (data.msg_type == 0) { // Standard message
+				appendChatMessage(data, false, true)
 			}
 		};
 
 		chatSocket.addEventListener("open", function(e){
-		console.log("Public Private ChatSocket OPEN")
+			console.log("ChatSocket OPEN")
 			// join chat room
 			if("{{request.user.is_authenticated}}"){
 				chatSocket.send(JSON.stringify({
@@ -274,22 +290,145 @@
 		})
 
 		chatSocket.onclose = function(e) {
-			console.error('Private ChatSocket closed.');
+			console.log('Chat socket closed.');
 		};
 
 		chatSocket.onOpen = function(e){
-			console.log("Private ChatSocket onOpen", e)
+			console.log("ChatSocket onOpen", e)
 		}
 
 		chatSocket.onerror = function(e){
-			console.log('Private ChatSocket error', e)
+			console.log('ChatSocket error', e)
 		}
 
 		if (chatSocket.readyState == WebSocket.OPEN) {
-			console.log("Private ChatSocket OPEN")
+			console.log("ChatSocket OPEN")
 		} else if (chatSocket.readyState == WebSocket.CONNECTING){
-			console.log("Private ChatSocket connecting..")
+			console.log("ChatSocket connecting..")
 		}
+	}
+
+	/*
+	Retrieve the user information of the user other in the chat.
+	1. Profile image
+	2. username
+	3. etc...
+	*/
+	function getUserInfo(){
+		chatSocket.send(JSON.stringify({
+			"command": "get_user_info",
+			"room_id": roomId,
+		}));
+	}
+
+	function handleUserInfoPayload(user_info){
+		document.getElementById("id_other_username").innerHTML = user_info['username']
+		document.getElementById("id_other_user_profile_image").classList.remove("d-none")
+		document.getElementById("id_user_info_container").href= "{% url 'account:view' user_id=53252623623632623 %}".replace("53252623623632623", user_info['id'])
+		preloadImage(user_info['profile_image'], "id_other_user_profile_image")
+	}
+
+	function showClientErrorModal(message) {
+		document.getElementById("id_client_error_modal_body").innerHTML = message
+		document.getElementById("id_trigger_client_error_modal").click()
+	}
+
+	function appendChatMessage(data, maintainPosition, isNewMessage) {
+		messageType = data.msg_type
+		msg_id = data.msg_id
+		message = data.message 
+		uName = data.username + ": "
+		user_id = data.user_id
+		profile_image = data.profile_image
+		timestamp = data.natural_timestamp
+		console.log("Add New Chat Message: "  + messageType)
+		
+		msg = message + "\n"
+		createChatMessageElement(msg, msg_id, uName, profile_image, user_id, timestamp, maintainPosition, isNewMessage)
+	}
+
+	document.getElementById('id_chat_message_input').focus();
+	document.getElementById('id_chat_message_input').onkeyup = function(e) {
+		if (e.keyCode === 13 && e.shiftKey) {  // enter + return
+			// Handled automatically by textarea
+		}
+		else if(e.keyCode === 13 && !e.shiftKey){ // enter + !return
+			document.getElementById('id_chat_message_submit').click();
+		}
+	};
+
+    document.getElementById('id_chat_message_submit').onclick = function(e) {
+		const messageInputDom = document.getElementById('id_chat_message_input');
+		const message = messageInputDom.value;
+		chatSocket.send(JSON.stringify({
+			"command": "send",
+			"message": message,
+			"room": roomId
+		}));
+		messageInputDom.value = '';
+	};
+
+	function createChatMessageElement(msg, msg_id, username, profile_image, user_id, timestamp, maintainPosition, isNewMessage) {
+		var chatLog = document.getElementById("id_chat_log")
+		
+		var newMessageDiv = document.createElement("div")
+		newMessageDiv.classList.add("d-flex", "flex-row", "message-container")
+
+		var profileImage = document.createElement("img")
+		profileImage.addEventListener("click", function(e) {
+			selectUser(user_id)
+		})
+		profileImage.classList.add("profile-image", "rounded-circle", "img-fluid")
+		profileImage.src = "{% static 'defaultImage/dummy_image.png' %}"
+		var profile_image_id = "id_profile_image_" + msg_id
+		profileImage.id = profile_image_id
+
+		newMessageDiv.appendChild(profileImage)
+
+		var div1 = document.createElement("div")
+		div1.classList.add("d-flex", "flex-column")
+		
+		var div2 = document.createElement("div")
+		div2.classList.add("d-flex", "flex-row")
+
+		var usernameSpan = document.createElement("span")
+		usernameSpan.innerHTML = username
+		usernameSpan.classList.add("username-span")
+		usernameSpan.addEventListener("click", function(e) {
+			selectUser(user_id)
+		})
+
+		div2.appendChild(usernameSpan)
+
+		var timestampSpan = document.createElement("span")
+		timestampSpan.innerHTML = timestamp
+		timestampSpan.classList.add("d-flex", "align-items-center", "timestamp-span")
+		timestampSpan.addEventListener("click", function(e) {
+			selectUser(user_id)
+		})
+
+		div2.appendChild(timestampSpan)
+
+		div1.appendChild(div2)
+
+		var msgP = document.createElement("p")
+		msgP.innerHTML = validateText(msg) // Prevents people from putting javascript and possible hacking using code in chat
+		msgP.classList.add("msg-p")
+		div1.appendChild(msgP)
+
+		newMessageDiv.appendChild(div1)
+
+		if (isNewMessage) {
+			chatLog.insertBefore(newMessageDiv, chatLog.firstChild) // Append newest chat message to the bottom of the page
+		} else {
+			chatLog.appendChild(newMessageDiv)
+		}
+
+		if (!maintainPosition) {
+			chatLog.scrollTop = chatLog.scrollHeight // When scrolling up or down
+		}
+
+		preloadImage(profile_image, profile_image_id)
 	}
 
 	function createOrReturnPrivateChat(id) {
@@ -306,20 +445,17 @@
 			success: function(data) {
 				console.log("SUCCESS", data)
 				if (data.response == "Successfully got the chat loaded.") {
-					setupWebSocket(data.chatroom_id)
+					setupWebSocket(data['chatroom_id'])
 				}
 				else if (data.response != null) {
-					alert(data.response)
+					alert(data['response'])
 				}
 			},
 			error: function(data) {
 				console.log("ERROR..." + data)
 				alert("Something went wrong.")
 			},
-			complete: function(data) {
-				
-			}
-		})
+		});
 	}
 
 </script>
