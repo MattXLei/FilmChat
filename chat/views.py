@@ -12,8 +12,19 @@ DEBUG = False
 
 def private_chat_room_view(request, *args, **kwargs):
     user = request.user
+    room_id = request.GET.get("room_id")
+
     if not user.is_authenticated:
         return redirect("login")
+
+    context = {}
+
+    if room_id:
+        try:
+            room = PrivateChatRoom.objects.get(pk = room_id)
+            context['room'] = room
+        except PrivateChatRoom.DoesNotExist:
+            pass
 
     #1 Find all rooms the user is in; get both users
     rooms1 = PrivateChatRoom.objects.filter(user1= user, is_active = True)
@@ -35,7 +46,6 @@ def private_chat_room_view(request, *args, **kwargs):
             "friend": friend,
         })
 
-    context = {}
     context['debug'] = DEBUG # Shows chat page number
     context['debug_mode'] = settings.DEBUG # Whether in debug mode or not from settings.py perspective
     context['m_and_f'] = m_and_f

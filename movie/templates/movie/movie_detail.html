@@ -45,7 +45,7 @@
 </style>
 
 <div class="container card"  style="padding: 30px;" >
-
+  
     <div class='d-flex align-items-center'> 
       {% if object.poster_path.name %}    
           <span style="float:left; padding-right: 30px; "><img src="{{ object.poster_path.url }}"  width='100'> </span>          
@@ -55,8 +55,8 @@
         <span><h5><i> {{ object.series_title }} </i></h5>  </span>
 
         <div></div>&nbsp;&nbsp;&nbsp;&nbsp;
-
-        <form action = "" method="get"> <!--Ratings from 1/2 star to a 5 star; SOMEHOW SAVE THIS INFO-->
+      <!--
+        <form action = "" method="get">
           <fieldset class="rate">
             <input type="radio" id="rating10" name="rating" value="10" /><label for="rating10" title="5 stars"></label>
             <input type="radio" id="rating9" name="rating" value="9" /><label class="half" for="rating9" title="4 1/2 stars"></label>
@@ -70,7 +70,7 @@
             <input type="radio" id="rating1" name="rating" value="1" /><label class="half" for="rating1" title="1/2 star"></label>
         
           </fieldset>
-        </form>
+        </form>-->
     </div> 
 
     <hr style="  color:#dd2476;background-color:#dd2476; ">

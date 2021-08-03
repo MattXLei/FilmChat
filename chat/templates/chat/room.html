@@ -7,7 +7,10 @@
 {% block content %}
 
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
-<!--<script src="{% static 'bootstrap/js/jquery.min.js' %}"></script>-->
+<!--<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">-->
+
+<script src="{% static 'bootstrap/js/jquery.min.js' %}"></script>
+
 
 <style type="text/css">
 	.chat-log {
@@ -124,9 +127,9 @@
 				<div class="card-body p-1">
 					<div class="d-flex flex-column" id="id_chat_log_container">
 					
-						<div class="d-flex flex-row justify-content-center" id="id_chatroom_loading_spinner_container">
-							<div class="spinner-border text-primary"  id="id_chatroom_loading_spinner" role="status"  style="display: none; ">
-								<span class="sr-only">Loading...</span>
+						<div class = "d-flex flex-row justify-content-center" id = "id_chatroom_loading_spinner_container">
+							<div class = "spinner-border text-primary" id = "id_chatroom_loading_spinner" role = "status" style = "display:none;"> <!--By default is not shown-->
+								<span class = "sr-only">Loading...</span>
 							</div>
 						</div>
 						<div class="d-flex chat-log" id = "id_chat_log" style = "background-color: #111; color: white">
@@ -201,8 +204,18 @@
 
 	onStart()
 	function onStart() {
-		{% if m_and_f %} 
-			onSelectFriend("{{m_and_f.0.friend.id}}")
+		{% if room %} 
+			if ("{{room.user1}}" == "{{request.user}}") {
+				onSelectFriend("{{room.user2.id}}") // Selecting opposite side of the room to chat with aka not yourself
+			}
+			else {
+				onSelectFriend("{{room.user1.id}}")
+			}
+
+		{% else %} 
+			{% if m_and_f %} 
+				onSelectFriend("{{m_and_f.0.friend.id}}")
+			{% endif %}
 		{% endif %}
 
 		{% for x in m_and_f %} 
@@ -212,12 +225,17 @@
 
 	function onSelectFriend(userId) {
 		createOrReturnPrivateChat(userId)
+		clearHighlightedFriend()
+		highlightFriend(userId)
 	}
 
 	function closeWebSocket() {
 		if (chatSocket != null) {
 			chatSocket.close()
 			chatSocket = null;
+			clearChatLog()
+			setPageNumber("1")
+			disableChatLogScrollListener()
 		}
 	}
 
@@ -249,8 +267,8 @@
 			console.log("Got websocket message.");
 			var data = JSON.parse(message.data);
 
-			// display the progress bar?
-			//displayChatroomLoadingSpinner(data.display_progress_bar)
+			// display the progress bar
+			displayChatroomLoadingSpinner(data.display_progress_bar)
 
 			// Handle errors (ClientError)
 			if (data.error) {
@@ -261,6 +279,8 @@
 			if (data.join) {
 				console.log("Joining room " + data.join);
 				getUserInfo()
+				getRoomChatMessages()
+				enableChatLogScrollListener()
 			}
 			// Handle leaving (client perspective)
 			if (data.leave) {
@@ -273,8 +293,12 @@
 				handleUserInfoPayload(data.user_info)
 			}
 
-			if (data.msg_type == 0) { // Standard message
+			if (data.msg_type == 0 || data.msg_type == 1 || data.msg_type == 2) { // Standard message
 				appendChatMessage(data, false, true)
+			}
+
+			if (data.messages_payload) {
+				handleMessagesPayload(data.messages, data.new_page_number)
 			}
 		};
 
@@ -343,8 +367,22 @@
 		timestamp = data.natural_timestamp
 		console.log("Add New Chat Message: "  + messageType)
 		
-		msg = message + "\n"
-		createChatMessageElement(msg, msg_id, uName, profile_image, user_id, timestamp, maintainPosition, isNewMessage)
+		switch(messageType) {
+			case 0: // Standard message
+				msg = message + "\n";
+				createChatMessageElement(msg, msg_id, uName, profile_image, user_id, timestamp, maintainPosition, isNewMessage);
+				break;
+			case 1: // User joins the chat
+				createConnectedDisconnectedElement(message, msg_id, profile_image, user_id);
+				break;
+			case 2: // User leaves the chat
+				createConnectedDisconnectedElement(message, msg_id, profile_image, user_id);
+				break;
+
+			default:
+				console.log("Unsupported Message Type")
+				return
+		}
 	}
 
 	document.getElementById('id_chat_message_input').focus();
@@ -367,6 +405,36 @@
 		}));
 		messageInputDom.value = '';
 	};
+
+	function createConnectedDisconnectedElement(msg, msg_id, profile_image, user_id) {
+		var chatLog = document.getElementById("id_chat_log")
+		
+		var newMessageDiv = document.createElement("div")
+		newMessageDiv.classList.add("d-flex", "flex-row", "message-container")
+
+		var profileImage = document.createElement("img")
+		profileImage.addEventListener("click", function(e) {
+			selectUser(user_id)
+		})
+		profileImage.classList.add("profile-image", "rounded-circle", "img-fluid")
+		profileImage.src = "{% static 'defaultImage/dummy_image.png' %}"
+		var profile_image_id = "id_profile_image_" + msg_id
+		profileImage.id = profile_image_id
+
+		newMessageDiv.appendChild(profileImage)
+
+		var usernameSpan = document.createElement("span")
+		usernameSpan.innerHTML = msg
+		usernameSpan.classList.add("username-span")
+		usernameSpan.addEventListener("click", function(e) {
+			selectUser(user_id)
+		})
+
+		newMessageDiv.appendChild(usernameSpan)
+
+		chatLog.insertBefore(newMessageDiv, chatLog.firstChild)
+		preloadImage(profile_image, profile_image_id)
+	}
 
 	function createChatMessageElement(msg, msg_id, username, profile_image, user_id, timestamp, maintainPosition, isNewMessage) {
 		var chatLog = document.getElementById("id_chat_log")
@@ -429,6 +497,85 @@
 		}
 
 		preloadImage(profile_image, profile_image_id)
+	}
+
+	function clearChatLog() { // Deletes chats of user from different chat if moved to new one
+		document.getElementById("id_chat_log").innerHTML = ""
+	}
+
+	function setPageNumber(pageNumber) {
+		document.getElementById("id_page_number").innerHTML = pageNumber
+	}
+
+	function setPaginationExhausted() {
+		setPageNumber("-1")
+	}
+
+	function getRoomChatMessages() { // Queries more chat messages
+		var pageNumber = document.getElementById("id_page_number").innerHTML
+		if (pageNumber != "-1") {
+			setPageNumber("-1")
+			chatSocket.send(JSON.stringify({
+				"command": "get_room_chat_messages",
+				"room_id": roomId,
+				"page_number": pageNumber,
+			}))
+		}
+	}
+
+	function handleMessagesPayload(messages, new_page_number) { // What happens when more messages started loading
+		if (messages != null && messages != "undefined" && messages != "None") {
+			setPageNumber(new_page_number)
+			messages.forEach(function(message) {
+				appendChatMessage(message, true, false)
+			})
+		}
+	}
+
+	function selectUser(user_id) {
+		var url = "{% url 'account:view' user_id=53252623623632623 %}".replace("53252623623632623", user_id)
+		var win = window.open(url) // Takes user to profile, opening a new tab instead of closing chat
+		win.focus()
+	}
+
+	function chatLogScrollListener(e) { // When scrolling up to see more messages, they will appear
+		var chatLog = document.getElementById("id_chat_log")
+		if ((Math.abs(chatLog.scrollTop) + 2) >= (chatLog.scrollHeight - chatLog.offsetHeight)) {
+			getRoomChatMessages()
+		}
+	}
+
+	function enableChatLogScrollListener() {
+		document.getElementById("id_chat_log").addEventListener("scroll", chatLogScrollListener) // Happens if scroll
+	}
+
+	function disableChatLogScrollListener() {
+		document.getElementById("id_chat_log").removeEventListener("scroll", chatLogScrollListener)
+	}
+
+	function displayChatroomLoadingSpinner(isDisplayed){
+		var spinner = document.getElementById("id_chatroom_loading_spinner")
+		if(isDisplayed){
+			spinner.style.display = "block"
+		}
+		else{
+			spinner.style.display = "none"
+		}
+	}
+
+	function highlightFriend(userId) { // When talking to friend, higlighted on right side
+		document.getElementById("id_friend_container_" + userId).style.background = "black"
+	}
+
+	function clearHighlightedFriend() {
+		{% if m_and_f %}
+			{% for x in m_and_f %}
+				document.getElementById("id_friend_container_{{x.friend.id}}").style.background = "" 
+			{% endfor %} 
+		{% endif %}
+
+		document.getElementById("id_other_user_profile_image").src = "{% static 'defaultImage/dummy_image.png' %}"
+		document.getElementById("id_other_username").innerHTML = ""
 	}
 
 	function createOrReturnPrivateChat(id) {
