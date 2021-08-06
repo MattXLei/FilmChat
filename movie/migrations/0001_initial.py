@@ -50,7 +50,7 @@ class Migration(migrations.Migration):
                 ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
             ],
             options={
-                'db_table': 'Favorite_Movies',
+                'db_table': 'favorite_movies',
                 'unique_together': {('user', 'movie')},
             },
         ),

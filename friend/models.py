@@ -6,7 +6,7 @@ from django.utils import timezone
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-# from chat.utils import find_or_create_private_chat
+from chat.utils import find_or_create_private_chat
 # from notification.models import Notification
 
 
@@ -29,7 +29,7 @@ class FriendList(models.Model):
         """
         if not account in self.friends.all():
             self.friends.add(account)
-            # self.save()
+            self.save()
 
             # content_type = ContentType.objects.get_for_model(self)
 
@@ -54,10 +54,10 @@ class FriendList(models.Model):
             # self.save()
 
             # Create a private chat (or activate an old one)
-            # chat = find_or_create_private_chat(self.user, account)
-            # if not chat.is_active:
-            #     chat.is_active = True
-            #     chat.save()
+            chat = find_or_create_private_chat(self.user, account)
+            if not chat.is_active: # Were friends, stopped being friends, and became friends again
+                chat.is_active = True
+                chat.save()
 
     def remove_friend(self, account):
         """
@@ -66,11 +66,11 @@ class FriendList(models.Model):
         if account in self.friends.all():
             self.friends.remove(account)
 
-            # Deactivate the private chat between these two users
-            # chat = find_or_create_private_chat(self.user, account)
-            # if chat.is_active:
-            #     chat.is_active = False
-            #     chat.save()
+            # Deactivate the private chat between these two former friends
+            chat = find_or_create_private_chat(self.user, account)
+            if chat.is_active:
+                chat.is_active = False
+                chat.save()
 
     def unfriend(self, removee):
         """

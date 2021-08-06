@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'public_chat',
     'channels',
     'movie',
+    'chat',
     'crispy_forms',
     'django_cleanup.apps.CleanupConfig',
     'django.contrib.admin',
@@ -92,10 +93,11 @@ ASGI_APPLICATION = "ChatServerPlayground.routing.application"
 
 CHANNEL_LAYERS = {
     'default': {
-        'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        'CONFIG': {
-            "hosts": [('127.0.0.1', 6379)],
-        },
+        #'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        "BACKEND": "channels.layers.InMemoryChannelLayer",
+        #'CONFIG': {
+        #    "hosts": [('127.0.0.1', 6379)],
+        #},
     },
 }
 

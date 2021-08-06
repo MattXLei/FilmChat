@@ -5,6 +5,19 @@
         width:1000px;
         float:right;
     }
+
+    .hovering{
+		cursor: pointer;
+		background: var(--main-background-color);
+	}
+
+    .chat-dropdown-header:hover{
+		cursor: pointer;
+		background: var(--main-background-color);
+	}
+	.chat-dropdown-header{
+		color: var(--light-primary-text-color);
+	}
 </style>
 
 <!-- Header -->
@@ -31,14 +44,14 @@
                     <div class="d-flex flex-row">
 
                         <div class="btn-group dropleft">
-                            <div class="d-flex notifications-icon-container rounded-circle align-items-center mr-3" id="id_chat_notification_dropdown_toggle" data-toggle="dropdown" style = "color: white">
+                            <div class="d-flex notifications-icon-container rounded-circle align-items-center mr-3 hovering" id="id_chat_notification_dropdown_toggle" data-toggle="dropdown" style = "color: white">
                                 <span id="id_chat_notifications_count" class="notify-badge"></span>
                                 <span class="d-flex material-icons notifications-material-icon m-auto align-items-center">chat</span>
                                 <div class="dropdown-menu scrollable-menu" aria-labelledby="id_chat_notification_dropdown_toggle" id="id_chat_notifications_container">
-
                                 </div>
                             </div>
                         </div>
+
                         <div></div>&nbsp;
                         <div class="btn-group dropleft">
                             <div class="d-flex notifications-icon-container rounded-circle align-items-center mr-3" id="id_notification_dropdown_toggle" data-toggle="dropdown" onclick="setGeneralNotificationsAsRead()" style = "color: white">
@@ -79,9 +92,10 @@
                 {% if request.user.is_authenticated %}
                 <div class="dropdown dropleft p-2 mt-2">
                     <div class="d-flex flex-row">
-                        <div class="btn-group dropleft">
-                            <img class="account-image rounded-circle m-auto d-block" id="id_profile_links" rc="{{request.user.profile_image.url}}" alt="defaultImage" width="40" height="40">
-                        </div>
+                        <a href="{% url 'account:view' user_id=request.user.id %}" id="myButton">
+                            <img class="account-image rounded-circle m-auto d-block" id="id_profile_links" src="{{request.user.profile_image.url}}" onerror="imgError(this);" width="40" height="40">
+
+                        </a>
                     </div>
                 </div>
                 {% else %}
@@ -96,20 +110,54 @@
 
 
 <script type="text/javascript">
+	setupChatDropdownHeader()
+
     function imgError(image) {
         image.onerror = "";
         image.src = "{% static 'defaultImage/dummy_image.png' %}";
         return true;
     }
 
-    function executeQuery() {
-        var query = ""
-        query = document.getElementById('id_q_small').value;
-        if (query == "") {
-            query = document.getElementById('id_q_large').value;
-        }
-        window.location.replace("{% url 'search' %}?q=" + query)
-        return false
-    }
+	function executeQuery() {
+		var query = ""
+		query = document.getElementById('id_q_small').value;
+		if (query == ""){
+			query = document.getElementById('id_q_large').value;
+		}
+	    window.location.replace("{% url 'search' %}?q=" + query)
+	    return false
+	}
+
+	/*
+		Add a header to the dropdown so users can visit /chat/
+	*/
+	function setupChatDropdownHeader(){
+		var notificationContainer = document.getElementById("id_chat_notifications_container")
+
+		if(notificationContainer != null){
+
+			var div = document.createElement("div")
+			div.classList.add("chat-dropdown-header", "d-flex", "flex-row", "justify-content-end", "m-auto", "align-items-center")
+			div.addEventListener("click", function(e){
+				var url = "{% url 'chat:private-chat-room' %}"
+				chatRedirect(url)
+			})
+
+			span1 = document.createElement("span")
+			span1.classList.add("mr-2")
+			span1.innerHTML = "Press To Chat"
+			div.appendChild(span1)
+
+			span2 = document.createElement("span")
+			span2.classList.add("material-icons", "mr-2")
+			span2.innerHTML = "open_with"
+			div.appendChild(span2)
+			notificationContainer.appendChild(div)
+		}
+	}
+
+	function chatRedirect(url){
+		window.location.href = url
+	}
 
 </script>
