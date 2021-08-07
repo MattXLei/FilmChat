@@ -25,7 +25,7 @@ SECRET_KEY = 'i3id2(u9f@x&!j!a91i_cs(dedmka(+!93wb5eh=8=2_@cnxzs'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["www.moviechat-club.chat"]
 
 if DEBUG:
     # During development only
