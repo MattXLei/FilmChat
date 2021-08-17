@@ -8,9 +8,9 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
       <div class="navbar-nav">      
-        <a class="nav-item nav-link" href="{% url 'movie:home'  %}">Movies</a>
+        <a class="nav-item nav-link" href="{% url 'movie:home'  %}">Movies Search</a>
         <a class="nav-item nav-link" href="#">Notifications</a>
-        <a class="nav-item nav-link" href="#">Chat</a>       
+        <a class="nav-item nav-link" href="{% url 'chat:private-chat-room' %}">Private Chat</a>       
       </div>
       <form class="form-inline my-2 my-lg-0" onsubmit="return executeQuery();" >                          
             <input class="form-control mr-sm-2" name="q" id="id_q" type="search" placeholder="Search a friend..." aria-label="Search" >               

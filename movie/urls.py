@@ -11,7 +11,5 @@ urlpatterns = [
     path('details/<int:pk>', MovieDetailView.as_view(), name='details'),
     path('like/<int:pk>', likeit, name='likeIt'),
     path('unlike/<int:pk>', unlikeit, name='UnlikeIt')
-    # path("ajax/like/", likeit, name="ajax_likeIt"),
-    # path("ajax/load_report/", load_report, name="ajax_load_report"),
 
 ]

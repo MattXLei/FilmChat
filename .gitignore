@@ -6,9 +6,9 @@
 *.pyc
 __pycache__
 db.sqlite3
-media/
-media_cdn/movie_posters/
-media_cdn/profile_images/
+# media/
+# media_cdn/movie_posters/
+# media_cdn/profile_images/
 
 # Environments 
 .env 

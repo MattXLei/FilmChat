@@ -2,19 +2,27 @@
 
 {% block content %}
 <div class="container-fluid" >
-	<h3 class = "text-center " style = "color: #F4DB7D;">Welcome to Matthew's Film Chat/Database Website!</h3>
-	<br>	
+	
 	<div class="row">
-		<div class="col-md-12">
+		<div class="col-md-5 mx-auto">
+			<h3 class = "text-center " style = "color: #F4DB7D;">Welcome to Matthew's Film Chat/Database Website!</h3>
+			<br>
+			<br>	
 			<h4 class="text-center  text-label " style='color:#FF6A3D'>Trending movies </h4>
-			
+			<br>s
 			{% include 'movie/carousle.html' with top_10_movies=top_10_movies %}
+		</div>
+		<div class="col-md-7 mx-auto">
+			{% include 'public_chat/snippets/public_chat_room.html' with room_id=room_id %}
+		</div>	
+			
+			
 	
 						
 			<!-- <h4 class="text-center text-label " style='color:#FF6A3D'>Public Film Chat</h4> -->
-			{% include 'public_chat/snippets/public_chat_room.html' with room_id=room_id %}
+			
 		<!-- </div>
-		<div class="col-md-5 mx-auto"> -->
+		<div class="col-md-5 "> -->
 			
 			
 			

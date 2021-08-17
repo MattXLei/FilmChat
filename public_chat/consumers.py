@@ -1,21 +1,24 @@
 from django.core.serializers.python import Serializer
 from django.core.paginator import Paginator
 from django.core.serializers import serialize
+from django.utils import timezone
+
 import asyncio
 from asgiref.sync import sync_to_async
 
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
 from channels.db import database_sync_to_async
 import json
-from django.contrib.auth import get_user_model
-from django.contrib.humanize.templatetags.humanize import naturalday, naturaltime
-from django.utils import timezone
-from datetime import datetime
+# from django.contrib.auth import get_user_model
 
+
+from chat.exceptions import ClientError
+from chat.utils import calculate_timestamp
 from public_chat.models import PublicChatRoom, PublicRoomChatMessage
 from public_chat.constants import *
 
-User = get_user_model()
+
+# User = get_user_model()
 
 # Example taken from:
 # https://github.com/andrewgodwin/channels-examples/blob/master/multichat/chat/consumers.py
@@ -133,7 +136,6 @@ class PublicChatConsumer(AsyncJsonWebsocketConsumer):
 # Connect and subscribe to specific room. STARTING HERE IS MULTIPLE CHATS STUFF (do Private Chat section LATER)
 
     # Called by receive_json when someone sends Join command
-
 
     async def join_room(self, room_id):
         print("PublicChatConsumer: join_room")
@@ -297,34 +299,6 @@ def get_room_chat_messages(room, page_number):
     except Exception as e:
         print("EXCEPTION: " + str(e))
         return None
-
-
-class ClientError(Exception):
-    """
-    Custom exception class that is caught by the websocket receive()
-    handler and translated into a send back to the client.
-    """
-
-    def __init__(self, code, message):
-        super().__init__(code)
-        self.code = code
-        if message:
-            self.message = message
-
-
-# Find time stamp of chat message; if today or yesterday, add time and "today/yesterday at". Else, just put the date.
-def calculate_timestamp(timestamp):
-    #today or yesterday
-    if (naturalday(timestamp) == "today" or (naturalday(timestamp) == "yesterday")):
-        # hour (0-12):minute:(AM or PM)
-        str_time = datetime.strftime(timestamp, "%I:%M %p")
-        str_time = str_time.strip("0")
-        ts = f"{naturalday(timestamp)} at {str_time}"
-    # ts = time stamp; Before yesterday aka 24 hours ago
-    else:
-        str_time = datetime.strftime(timestamp, "%m/%d/%Y")  # Month/Day/Year
-        ts = f"{str_time}"
-    return str(ts)
 
 
 class LazyRoomChatMessageEncoder(Serializer):  # Convert stuff to JSON first
