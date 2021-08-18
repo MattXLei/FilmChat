@@ -7,17 +7,25 @@ import json
 from chat.models import PrivateChatRoom, RoomChatMessage
 from chat.utils import find_or_create_private_chat
 from account.models import Account
+
 DEBUG = False
 
 
 def private_chat_room_view(request, *args, **kwargs):
     user = request.user
+    room_id = request.GET.get('room_id')
 
     # Redirect them if not authenticated
     if not user.is_authenticated:
         return redirect("login")
 
     context = {}
+    if room_id:
+        try:
+            room = PrivateChatRoom.objects.get(pk=room_id)
+            context['room'] = room
+        except PrivateChatRoom.DoesNotExist:
+            pass
 
     # 1. Find all the rooms this user is a part of
     rooms1 = PrivateChatRoom.objects.filter(user1=user, is_active=True)
@@ -51,6 +59,7 @@ def private_chat_room_view(request, *args, **kwargs):
     return render(request, "chat/room.html", context)
 
 
+# Ajax call to return a private chatroom or create one if does not exist
 def create_or_return_private_chat(request, *args, **kwargs):
     user1 = request.user
     payload = {}

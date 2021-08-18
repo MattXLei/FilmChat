@@ -10,12 +10,16 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 
 <style type="text/css">
+
+	.card {           
+		background: linear-gradient(to top, #F4DB7D, #FF6A3D);
+	}
 	.chat-log {
 		height: 500px;
 		overflow-x: hidden;
 		overflow-y: auto;
 		padding: 10px;
-		background-color: #fff;
+		background-color: #f7e4a0;
 		font-size: 0.9em;
 		flex-direction: column-reverse;
 	}
@@ -113,11 +117,11 @@
 <div class="container">
 	<div class="row">
 		<div class="col-sm-9 m-0 p-2">
-			<div class="card" id="id_chatroom_card">
+			<div class="card" id="id_chatroom_card"  >
 				<div class="d-flex flex-row align-items-center card-header" id="id_room_title">
-				<a class="d-flex flex-row" target="_blank" id="id_user_info_container">
+				<a class="d-flex flex-row text-white" target="_blank" id="id_user_info_container">
 					<img class="profile-image rounded-circle img-fluid" id="id_other_user_profile_image" src="{% static 'defaultImage/dummy_image.png' %}">
-					<h3 class="ml-2" id="id_other_username"></h3>
+					<h3 class="ml-2 " id="id_other_username"></h3>
 				</a>
 				
 				</div>
@@ -147,9 +151,9 @@
 		</div>
 
 		<div class="col-sm-3 m-0 p-2">
-			<div class="card">
+			<div class="card" >
 				<div class="d-flex flex-row align-items-center card-header">
-					<h3 >Friends</h3>
+					<h3 class='text-white' >Friends</h3>
 				</div>
 				<div class="card-body p-1">	
 					<div class="d-flex flex-column friends-list-container ">
@@ -203,17 +207,28 @@
 	onStart()
 
 	function onStart(){
-		{% if m_and_f %}
-			onSelectFriend("{{m_and_f.0.friend.id}}")
+		{% if room %}
+			if("{{room.user1}}" == "{{request.user}}"){
+				onSelectFriend("{{room.user2.id}}")
+			}else{
+				onSelectFriend("{{room.user1.id}}")
+			}
+		{% else %}
+			{% if m_and_f %}
+				onSelectFriend("{{m_and_f.0.friend.id}}")
+			{% endif %}
 		{% endif %}
+		
 		{% for x in m_and_f %}
 			preloadImage("{{x.friend.profile_image.url|safe}}", "id_friend_img_{{x.friend.id}}")
 		{% endfor %}
 	}
 
 	function onSelectFriend(userId){
-		console.log("onSelectFriend: " + userId)
+		console.log("onSelectFriend: " + userId) 
 		createOrReturnPrivateChat(userId)
+		clearHighlightedFriend()
+		highlightFriend(userId)
 	}
 
 	function closeWebSocket(){
@@ -584,7 +599,23 @@
 		}
 	}
 
+	function highlightFriend(userId){
+		// select new friend
+		document.getElementById("id_friend_container_" + userId).style.background = "#FF6A3D"
+	}
 
+	function clearHighlightedFriend(){
+		{% if m_and_f %}
+			{% for x in m_and_f %}
+				document.getElementById("id_friend_container_{{x.friend.id}}").style.background = ""
+			{% endfor %}
+		{% endif %}
+
+		// clear the profile image and username of current chat
+		document.getElementById("id_other_user_profile_image").classList.add("d-none")
+		document.getElementById("id_other_user_profile_image").src = "{% static 'codingwithmitch/dummy_image.png' %}"
+		document.getElementById("id_other_username").innerHTML = ""
+	}
 
 	function createOrReturnPrivateChat(id){
 		payload = {
