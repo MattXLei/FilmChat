@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'public_chat',
     'movie',
     'chat',
+    'notification',
     'channels',
     'crispy_forms',
     'django_cleanup.apps.CleanupConfig',
