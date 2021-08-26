@@ -1,0 +1,92 @@
+{% load static %}
+
+<!-- Header -->
+<nav class="navbar navbar-expand-lg " >
+    <a class="navbar-brand" href="{% url 'home' %}"><img src="{% static 'logo.png' %}" width="150px" ></a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+      <div class="navbar-nav">      
+        <a class="nav-item nav-link" href="{% url 'movie:home'  %}">Movies Search</a>
+        <a class="nav-item nav-link" href="#">Notifications</a>
+        <a class="nav-item nav-link" href="{% url 'chat:private-chat-room' %}">Private Chat</a>       
+      </div>
+      <form class="form-inline my-2 my-lg-0" onsubmit="return executeQuery();" >                          
+            <input class="form-control mr-sm-2" name="q" id="id_q" type="search" placeholder="Search a friend..." aria-label="Search" >               
+      </form>
+      <div class="navbar-nav ml-auto">                   
+            {% if request.user.is_authenticated %}
+                <a class="item nav-link" href="{% url 'account:view' user_id=request.user.id %}"> 
+                    <img class="account-image rounded-circle m-auto d-block" id="id_profile_links" src="{{request.user.profile_image.url}}" onerror="imgError(this);" width="50" height="50">             
+                </a>
+                <a class="item nav-link" href="/logout">Log out</a>
+            {% else %}
+                <a class="nav-item nav-link" href="{% url 'login' %}">Login</a>       
+                <a class="nav-item nav-link" href="{% url 'register' %}">Register</a>
+            {% endif %}
+          
+        </div>
+
+      
+ 
+      </div>
+
+    </div>
+
+  </nav>
+ 
+
+ <!-- Setup SOCKET for NOTIFICATIONS -->
+<script type="text/javascript">
+      // Correctly decide between ws:// and wss://
+      var ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
+      // var ws_path = ws_scheme + '://' + window.location.host + ":8001/"; // PRODUCTION
+      var ws_path = ws_scheme + '://' + window.location.host + "/";
+      // console.log("Connecting to " + ws_path);
+      var notificationSocket = new WebSocket(ws_path);
+
+      // Handle incoming messages
+      notificationSocket.onmessage = function(message) {
+        console.log("Got notification websocket message.");
+        var data = JSON.parse(message.data);
+
+      }
+
+      notificationSocket.onclose = function(e) {
+        console.error('Notification Socket closed unexpectedly');
+      };
+
+      notificationSocket.onopen = function(e){
+        console.log("Notification Socket on open: " + e)
+      }
+
+      notificationSocket.onerror = function(e){
+        console.log('Notification Socket error', e)
+      }
+
+      if (notificationSocket.readyState == WebSocket.OPEN) {
+        console.log("Notification Socket OPEN complete.")
+      } 
+      else if (notificationSocket.readyState == WebSocket.CONNECTING){
+        console.log("Notification Socket connecting..")
+      }
+</script>
+
+
+<script type="text/javascript">
+    function imgError(image) {
+        image.onerror = "";
+        image.src = "{% static 'defaultImage/dummy_image.png' %}";
+        return true;
+    }
+
+    function executeQuery() {
+        var query = ""
+        query = document.getElementById('id_q').value;
+       
+        window.location.replace("{% url 'search' %}?q=" + query)
+        return false
+    }
+
+</script>

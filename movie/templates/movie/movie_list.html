@@ -1,0 +1,84 @@
+
+{% load static %}
+{% load crispy_forms_tags %}
+{% load mytag %}
+  
+<div class="container  ">   
+  
+    <form method="GET" > 
+      <div class="d-flex justify-content-between"> 
+        <div class="text-left search-container">
+          <input type="text" name="q" placeholder="Enter Keyword" value="{{ request.GET.q }}" >         
+          <button type="submit" style="background: #0f1f41; border: none;"><img src="{% static 'search.png'%}" width="40px"></button>
+        </div>
+        {% if request.user.is_authenticated %}
+          <div style="padding-right: 30px;" >
+            <a href="{% url 'movie:create' %}"><img src="{% static 'add.png' %}" width="40px" data-toggle="tooltip" data-placement="left" title='Add a movie' ></a>
+          </div>
+          {% endif %}
+      </div> 
+    </form>
+
+     <br>
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}  d-flex justify-content-center">
+      {{ message|safe }}
+      <!-- {% if 'safe' in message.tags %}{{ message|safe }}{% else %}{{ message }}{% endif %} -->
+    </div>
+    {% endfor %}
+    {% endif %}  
+         
+          {% for movie in movies %}       
+              {% if forloop.first %}<div class="row ">{% endif %}                      
+              <div class="col-md-3">     
+                  <div class="card mx-auto" style="width: 14rem;">    
+                      {% if movie.poster_path|length > 0 %}
+                      <a href="{% url 'movie:details' movie.pk %}"><img src="{{ movie.poster_path.url }}"  width='100' class="card-img-top" alt="...">  </a>
+                      {% else %}
+                      <a href="{% url 'movie:details' movie.pk %}"><img src="{{movie.poster_link}}" class="card-img-top" alt="..."></a>
+                      {% endif %}
+                     
+                      <div class="card-body">  
+                          <h6 class="card-title" > {{movie.series_title|truncatechars:40}}   <a href="{% url 'movie:likeIt' movie.pk %}" class="float-right" >
+                            <img  src="{% static 'like.png' %}" width='30px'  alt="Like" data-toggle="tooltip" data-placement="right" title='Like It' /> 
+                          </a></h6> 
+ 
+                      </div>
+                  </div>
+              </div>
+              {% if forloop.counter|divisibleby:4 %}</div><div class="row">{% endif %}  
+              {% if forloop.last %}</div>{% endif %}
+          {% endfor %}
+      </div>
+  
+  
+    <div style="text-align: center;">
+      {% if is_paginated %}
+      {% if page_obj.has_previous %}
+          <a class="btn btn-outline-info mb-4" href="?{% query_transform request page=1 %}">First</a>
+          <a class="btn btn-outline-info mb-4" href="?{% query_transform request page=page_obj.previous_page_number %}}">Previous</a>
+      {% endif%}
+      
+      {% for num in page_obj.paginator.page_range %}
+          {% if page_obj.number == num %}
+              <a class="btn btn-info mb-4" href="?{% query_transform request page=num %}">{{ num }}</a>
+          {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+              <a class="btn btn-outline-info mb-4" href="?{% query_transform request page=num %}">{{ num }}</a>
+          {% endif %}
+      
+      {% endfor %}
+      
+      {% if page_obj.has_next %}
+          <a class="btn btn-outline-info mb-4" href="?{% query_transform request page=page_obj.next_page_number %}">Next</a>
+          <a class="btn btn-outline-info mb-4" href="?{% query_transform request page=page_obj.paginator.num_pages %}">Last</a>
+      {% endif%}
+      
+      {% endif %}
+      
+  
+    </div>
+
+
+ 
+  

@@ -5,8 +5,13 @@ from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
+from django.conf import settings
+
 from .models import TopMovies, FavoriteMovies
 from .forms import MovieUpdateForm, MovieCreateForm
+
+
+DEBUG = False
 
 
 class MovieCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
@@ -21,7 +26,7 @@ class MovieListView(ListView):
     template_name = 'movie/home.html'
     context_object_name = 'movies'
     ordering = ['-released_year']
-    paginate_by = 6
+    paginate_by = 12
 
     def get_queryset(self):
         q = self.request.GET.get("q")
@@ -29,6 +34,15 @@ class MovieListView(ListView):
         if q:
             object_list = object_list.filter(series_title__icontains=q)
         return object_list
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['debug_mode'] = settings.DEBUG
+        context['debug'] = DEBUG
+        context['room_id'] = "1"
+        top_10_movies = TopMovies.objects.all().order_by('-imdb_rating')[:10]
+        context['top_10_movies'] = top_10_movies
+        return context
 
 
 class MovieDetailView(DetailView):

@@ -6,7 +6,7 @@ from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views
 
 
-from home.views import home_screen_view
+from movie.views import MovieListView
 
 from account.views import (register_view, login_view,
                            logout_view, account_search_view)
@@ -14,7 +14,8 @@ from account.views import (register_view, login_view,
 admin.site.site_header = "The Pet's Movie Chat Administration"
 
 urlpatterns = [
-    path('', home_screen_view, name='home'),
+    #     path('', home_screen_view, name='home'),
+    path('', MovieListView.as_view(), name='home'),
     path('account/', include('account.urls', namespace='account')),
     path('admin/', admin.site.urls),
     path('chat/', include('chat.urls', namespace='chat')),

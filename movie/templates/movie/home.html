@@ -4,88 +4,22 @@
 {% load mytag %}
 {% block content %}
 
-  
-<div class="container mx-auto ">    
-  <form method="GET" >
-        <input type="text" name="q" placeholder="Enter Keyword" value="{{ request.GET.q }}" >         
-        <button class="btn btn-outline-info" type="submit">Search</button>
-        <a href="{% url 'movie:create' %}" class="button btn" style="float: right; position:absolute; right:140px;">Add A Movie</a>
-  </form>
-  <!--<a href="{% url 'movie:create' %}" class="button btn" style="float: right;">Add A Movie</a>-->
-  <br>
-  {% if messages %}
-  {% for message in messages %}
-  <div class="alert alert-{{ message.tags }}  d-flex justify-content-center">
-    {{ message|safe }}
-    <!-- {% if 'safe' in message.tags %}{{ message|safe }}{% else %}{{ message }}{% endif %} -->
-  </div>
-  {% endfor %}
-  {% endif %}  
-       
-        {% for movie in movies %}       
-            {% if forloop.first %}<div class="row ">{% endif %}                      
-            <div class="col-md-4">     
-                <div class="card" style="width: 18rem;">
-
-                  {% if movie.poster_path|length > 0 %}
-                    <img src="{{ movie.poster_path.url }}"  width='100' class="card-img-top" alt="...">  
-                  {% else %}
-                    <img src="{{movie.poster_link}}" class="card-img-top" alt="...">
-                  {% endif %}
-                   
-                    <div class="card-body">
-                        <h5 class="card-title">{{movie.series_title}}</h5>
-                        <p class="card-text">{{movie.overview|truncatechars:80}}</p>
-                    </div>
-                    
-                    <div class="row">
-                      <div class="col text-right">
-                        <a href="{% url 'movie:details' movie.pk %}"   > 
-                          <img  src="{% static 'details.png' %}" width='30px'  alt="Details" data-toggle="tooltip" data-placement="left" title='More details' /> 
-                        </a>
-                      </div>
-                      <div class="col text-left">
-                        <a href="{% url 'movie:likeIt' movie.pk %}" >
-                          <img  src="{% static 'like.png' %}" width='30px' alt="Like" data-toggle="tooltip" data-placement="right" title='Like' /> 
-                        </a>
-                      </div>
-                    </div>      
-
-                </div>
+<div class="container-fluid" >
+	
+	<div class="row">
+            <div class="col-md-8"> 
+                  {% include 'movie/movie_list.html' %} 
             </div>
-            {% if forloop.counter|divisibleby:3 %}</div><div class="row">{% endif %}  
-            {% if forloop.last %}</div>{% endif %}
-        {% endfor %}
-    </div>
-
-<br>
-<br>
-  <div style="text-align: center;">
-    {% if is_paginated %}
-    {% if page_obj.has_previous %}
-        <a class="btn btn-outline-info mb-4" href="?{% query_transform request page=1 %}">First</a>
-        <a class="btn btn-outline-info mb-4" href="?{% query_transform request page=page_obj.previous_page_number %}}">Previous</a>
-    {% endif%}
-    
-    {% for num in page_obj.paginator.page_range %}
-        {% if page_obj.number == num %}
-            <a class="btn btn-info mb-4" href="?{% query_transform request page=num %}">{{ num }}</a>
-        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
-            <a class="btn btn-outline-info mb-4" href="?{% query_transform request page=num %}">{{ num }}</a>
-        {% endif %}
-    
-    {% endfor %}
-    
-    {% if page_obj.has_next %}
-        <a class="btn btn-outline-info mb-4" href="?{% query_transform request page=page_obj.next_page_number %}">Next</a>
-        <a class="btn btn-outline-info mb-4" href="?{% query_transform request page=page_obj.paginator.num_pages %}">Last</a>
-    {% endif%}
-    
-    {% endif %}
-    
-
-  </div>
+            <div class="col-md-4">  
+                  <h4 class="text-center  text-label " style='color:#FF6A3D'>Trending movies </h4>
+                  {% include 'movie/carousle.html' with top_10_movies=top_10_movies %}
+                  <br>
+                  {% include 'public_chat/snippets/public_chat_room.html' with room_id=room_id %}                   
+            </div>	
+	</div>
 
 </div>
+
+ 
 
 {% endblock content %}

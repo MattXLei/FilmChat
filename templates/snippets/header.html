@@ -1,58 +1,235 @@
 {% load static %}
 
+<style type="text/css">
+	.chat-dropdown-header:hover{
+		cursor: pointer;
+		background: var(--main-background-color);
+	}
+	.chat-dropdown-header{
+		color: var(--light-primary-text-color);
+	}
+	.scrollable-menu {
+		height: auto;
+		max-height: 90vh;
+		width: 500px;
+		overflow-x: hidden;
+	}
+</style>
+
 <!-- Header -->
-<nav class="navbar navbar-expand-lg " >
-    <a class="navbar-brand" href="{% url 'home' %}"><img src="{% static 'logo.png' %}" width="150px" ></a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-      <div class="navbar-nav">      
-        <a class="nav-item nav-link" href="{% url 'movie:home'  %}">Movies Search</a>
-        <a class="nav-item nav-link" href="#">Notifications</a>
-        <a class="nav-item nav-link" href="{% url 'chat:private-chat-room' %}">Private Chat</a>       
-      </div>
-      <form class="form-inline my-2 my-lg-0" onsubmit="return executeQuery();" >                          
-            <input class="form-control mr-sm-2" name="q" id="id_q" type="search" placeholder="Search a friend..." aria-label="Search" >               
-      </form>
-      <div class="navbar-nav ml-auto">                   
-            {% if request.user.is_authenticated %}
-                <a class="item nav-link" href="{% url 'account:view' user_id=request.user.id %}"> 
-                    <img class="account-image rounded-circle m-auto d-block" id="id_profile_links" src="{{request.user.profile_image.url}}" onerror="imgError(this);" width="50" height="50">             
-                </a>
-                <a class="item nav-link" href="/logout">Log out</a>
-            {% else %}
-                <a class="nav-item nav-link" href="{% url 'login' %}">Login</a>       
-                <a class="nav-item nav-link" href="{% url 'register' %}">Register</a>
-            {% endif %}
-          
-        </div>
+<div class="d-flex flex-column flex-lg-row p-3 px-md-4 mb-3  shadow-sm">
 
-      
- 
-      </div>
+	<!-- MEDIUM+ SCREENS -->
+	<div class="d-none d-md-flex flex-row my-auto flex-grow-1 align-items-center">
+		<h5 class="mr-3 font-weight-normal justify-content-start">
+			<a class="p-2 text-dark" href="{% url 'home' %}"><img src="{% static 'logo2.png' %}" width="120px" ></a>
+		</h5>
+		<!-- <form class="search-bar d-flex justify-content-end" onsubmit="return executeQuery();">
+			<input type="text" class="form-control" name="q" id="id_q_large" placeholder="Search a friend ..."> 
+		 </form> -->
 
-    </div>
+		<div class="d-flex flex-row-reverse flex-grow-1">
 
-  </nav>
- 
+			<nav class="">
+				{% if request.user.is_authenticated %}
+					<div class="dropdown dropleft show p-2">
+						<div class="d-flex flex-row">
 
- 
+							<div class="btn-group dropleft">
+								<div class="d-flex notifications-icon-container rounded-circle align-items-center mr-3" id="id_chat_notification_dropdown_toggle" data-toggle="dropdown">
+									<span id="id_chat_notifications_count" class="notify-badge"></span>
+									<span class="d-flex material-icons notifications-material-icon m-auto align-items-center"><img src="{% static 'chat.png' %}" width="35px" alt="Chat" ></span>
+									<div class="dropdown-menu scrollable-menu" aria-labelledby="id_chat_notification_dropdown_toggle" id="id_chat_notifications_container">
+									</div>
+								</div>
+							</div>
 
+							<div class="btn-group dropleft">
+								<div class="d-flex notifications-icon-container rounded-circle align-items-center mr-3" id="id_notification_dropdown_toggle" data-toggle="dropdown" onclick="setGeneralNotificationsAsRead()">
+									<span id="id_general_notifications_count" class="notify-badge"></span>
+									<span class="d-flex material-icons notifications-material-icon m-auto align-items-center"><img src="{% static 'notifications.png'%}" width="35px"  alt="Notifications" ></span>
+									<div class="dropdown-menu scrollable-menu" aria-labelledby="id_notification_dropdown_toggle" id="id_general_notifications_container">					
+									</div>
+								</div>
+							</div>
+
+							<div class="btn-group dropleft">
+								<img class="account-image rounded-circle m-auto d-block dropdown-toggle" id="id_profile_links" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" src="{{request.user.profile_image.url}}" alt="logo" width="50" height="50">
+								<div class="dropdown-menu" aria-labelledby="id_profile_links">
+									<a class="dropdown-item" href="{% url 'account:view' user_id=request.user.id %}">Account</a>
+									<a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
+								</div>
+							</div>
+
+						</div>
+            
+					</div>
+				{% else %} 
+
+					<div class="btn-group dropleft">
+						<img class="account-image rounded-circle m-auto d-block dropdown-toggle" id="id_profile_links" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" src="{% static 'user2.png' %}" alt="user logo" width="40" height="40">
+						<div class="dropdown-menu" aria-labelledby="id_profile_links">
+							<a class="dropdown-item" href="{% url 'login' %}">Login </a>
+							<a class="dropdown-item" href="{% url 'register' %}">Register </a>
+						</div>
+					</div>
+				{% endif %}	
+  
+			</nav>
+			 
+			<nav class="d-flex align-items-center mr-5  pr-5" >
+				<form class="search-bar " onsubmit="return executeQuery();">
+					<input type="text" class="form-control" name="q" id="id_q_large" placeholder="Search a friend ..."> 
+				 </form>
+			</nav>
+
+		</div>
+	</div>
+	<!-- END MEDIUM+ SCREENS -->
+
+	<!-- SMALL SCREENS -->
+	<div class="d-flex d-md-none flex-column my-auto align-items-center">
+		<h5 class="font-weight-normal">
+		<a class="p-2 text-dark" href="{% url 'home' %}">Home</a>
+		</h5>
+		<form class="search-bar justify-content-start" onsubmit="return executeQuery();">
+			<input type="text" class="form-control" name="q" id="id_q_small" placeholder="Search...">
+		</form>
+		<div class="d-flex flex-row-reverse flex-grow-1">
+			<nav class="">
+				{% if request.user.is_authenticated %}
+				<div class="dropdown dropleft p-2 mt-2">
+					<div class="d-flex flex-row">
+						<div class="btn-group dropleft">
+							<img class="account-image rounded-circle m-auto d-block dropdown-toggle" id="id_profile_links" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" src="{{request.user.profile_image.url}}" alt="logo" width="40" height="40">
+							<div class="dropdown-menu" aria-labelledby="id_profile_links">
+								<a class="dropdown-item" href="{% url 'account:view' user_id=request.user.id %}">Account</a>
+							</div>
+						</div>
+					</div>
+				</div>
+				{% else %}
+					<a class="p-2 text-dark" href="{% url 'login' %}">Login</a>
+					<a class="btn btn-outline-primary m-2" href="{% url 'register' %}">Register</a>
+				{% endif %}	
+			</nav>
+	  	</div>
+	</div>
+	<!-- END SMALL SCREENS -->
+</div>
+
+
+{% include 'snippets/general_notifications.html' %}
+
+<!-- Setup SOCKET for NOTIFICATIONS -->
+<script type="text/javascript">
+	// Correctly decide between ws:// and wss://
+	var ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
+	// var ws_path = ws_scheme + '://' + window.location.host + ":8001/"; // PRODUCTION
+	var ws_path = ws_scheme + '://' + window.location.host + "/";
+	// console.log("Connecting to " + ws_path);
+	var notificationSocket = new WebSocket(ws_path);
+
+	// Handle incoming messages
+	notificationSocket.onmessage = function(message) {
+		console.log("Got notification websocket message.");
+		var data = JSON.parse(message.data);
+
+		/*
+			GENERAL NOTIFICATIONS
+		*/
+		// new 'general' notifications data payload
+		if(data.general_msg_type == 0){
+			handleGeneralNotificationsData(data['notifications'], data['new_page_number'])
+		}
+	}
+
+	notificationSocket.onclose = function(e) {
+		console.error('Notification Socket closed unexpectedly');
+	};
+
+	notificationSocket.onopen = function(e){
+		console.log("Notification Socket on open: " + e)
+		setupGeneralNotificationsMenu()
+		getFirstGeneralNotificationsPage()
+	}
+
+	notificationSocket.onerror = function(e){
+		console.log('Notification Socket error', e)
+	}
+
+	if (notificationSocket.readyState == WebSocket.OPEN) {
+		console.log("Notification Socket OPEN complete.")
+	} 
+	else if (notificationSocket.readyState == WebSocket.CONNECTING){
+		console.log("Notification Socket connecting..")
+	}
+</script>
 
 <script type="text/javascript">
-    function imgError(image) {
-        image.onerror = "";
-        image.src = "{% static 'defaultImage/dummy_image.png' %}";
-        return true;
-    }
+	setupChatDropdownHeader()
 
-    function executeQuery() {
-        var query = ""
-        query = document.getElementById('id_q').value;
-       
-        window.location.replace("{% url 'search' %}?q=" + query)
-        return false
-    }
+	function executeQuery() {
+		var query = ""
+		query = document.getElementById('id_q_small').value;
+		if (query == ""){
+			query = document.getElementById('id_q_large').value;
+		}
+	    window.location.replace("{% url 'search' %}?q=" + query)
+	    return false
+	}
+
+	/*
+		Add a header to the dropdown so users can visit /chat/
+	*/
+	function setupChatDropdownHeader(){
+		var notificationContainer = document.getElementById("id_chat_notifications_container")
+
+		if(notificationContainer != null){
+
+			var div = document.createElement("div")
+			div.classList.add("chat-dropdown-header", "d-flex", "flex-row", "justify-content-end", "m-auto", "align-items-end")
+			div.addEventListener("click", function(e){
+				var url = "{% url 'chat:private-chat-room' %}"
+				chatRedirect(url)
+			})
+
+			span1 = document.createElement("span")
+			span1.classList.add("mr-2")
+			span1.innerHTML = "Go to chat"
+			div.appendChild(span1)
+
+			span2 = document.createElement("span")
+			span2.classList.add("material-icons", "mr-2")
+			span2.innerHTML = "open_with"
+			div.appendChild(span2)
+			notificationContainer.appendChild(div)
+		}
+	}
+
+	function chatRedirect(url){
+		window.location.href = url
+	}
 
 </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

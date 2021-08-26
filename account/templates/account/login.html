@@ -24,6 +24,7 @@
     border-top-right-radius: 0;
   }
 
+   
 
 </style>
 
@@ -52,13 +53,25 @@
 				</div>
 
 				{% endif %}
+				<div>
+					<button class="btn btn-primary btn-block" type="submit">Login</button>
 
-				<button class="btn btn-lg btn-primary btn-block" type="submit">Log in</button>
+				</div>
+				
 				</form>
 
 				<div class="d-flex flex-column my-4">
-					<a class="m-auto" href="{% url 'password_reset' %}">Reset password</a>
+					<!-- <a class="m-auto" href="{% url 'password_reset' %}">Forgot password?</a> -->
+					<small class="text-muted">
+						<a href="{% url 'password_reset' %}">Forgot password?</a>
+					 </small>
 				</div>
+				<div >					 
+					<small class="text-dark">
+                        Need an account? <a class="ml-2" href="{% url 'register' %}">Sign up</a>
+                    </small>
+				</div>
+				 
 		  </div>
 		</div>
 		

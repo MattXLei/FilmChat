@@ -181,7 +181,7 @@ class FriendRequest(models.Model):
                 self.is_active = False
                 self.save()
             # we will need this later to update the realtime notifications
-            # return receiver_notification
+            return receiver_notification
 
     def decline(self):
         """
