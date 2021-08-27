@@ -49,13 +49,22 @@ class NotificationConsumer(AsyncJsonWebsocketConsumer):
             if command == "get_general_notifications":
                 payload = await get_general_notifications(self.scope["user"], content.get("page_number", None))
                 if payload == None:
-                    pass
+                    await self.general_pagination_exhausted()
                 else:
                     payload = json.loads(payload)
                     await self.send_general_notifications_payload(payload['notifications'], payload['new_page_number'])
             elif command == 'accept_friend_request':
                 notificaiton_id = content['notification_id']
                 payload = await accept_friend_request(self.scope['user'], notificaiton_id)
+                if payload == None:
+                    raise ClientError(
+                        "Something went wrong. Try refreshing the browser.")
+                else:
+                    payload = json.loads(payload)
+                    await self.send_updated_friend_request_notification(payload['notification'])
+            elif command == 'decline_friend_request':
+                notificaiton_id = content['notification_id']
+                payload = await decline_friend_request(self.scope['user'], notificaiton_id)
                 if payload == None:
                     raise ClientError(
                         "Something went wrong. Try refreshing the browser.")
@@ -79,7 +88,7 @@ class NotificationConsumer(AsyncJsonWebsocketConsumer):
         """
         Called by receive_json when ready to send a json array of the notifications
         """
-        #print("NotificationConsumer: send_general_notifications_payload")
+        # print("NotificationConsumer: send_general_notifications_payload")
         await self.send_json(
             {
                 "general_msg_type": GENERAL_MSG_TYPE_NOTIFICATIONS_PAYLOAD,
@@ -102,9 +111,21 @@ class NotificationConsumer(AsyncJsonWebsocketConsumer):
             },
         )
 
+    async def general_pagination_exhausted(self):
+        """
+        Called by receive_json when pagination is exhausted for general notifications
+        """
+        print("General Pagination DONE... No more notifications.")
+        await self.send_json(
+            {
+                "general_msg_type": GENERAL_MSG_TYPE_PAGINATION_EXHAUSTED,
+            },
+        )
+
 
 @database_sync_to_async
 def get_general_notifications(user, page_number):
+    # print("page_number in = " + page_number)
     """
     Get General Notifications with Pagination (next page of results).
     This is for appending to the bottom of the notifications list.
@@ -150,6 +171,32 @@ def accept_friend_request(user, notification_id):
             if friend_request.receiver == user:
                 # accept the request and get the updated notification
                 updated_notification = friend_request.accept()
+
+                # return the notification associated with this FriendRequest
+                s = LazyNotificationEncoder()
+                payload['notification'] = s.serialize(
+                    [updated_notification])[0]
+                return json.dumps(payload)
+        except Notification.DoesNotExist:
+            raise ClientError(
+                "An error occurred with that notification. Try refreshing the browser.")
+    return None
+
+
+@database_sync_to_async
+def decline_friend_request(user, notification_id):
+    """
+    Decline a friend request
+    """
+    payload = {}
+    if user.is_authenticated:
+        try:
+            notification = Notification.objects.get(pk=notification_id)
+            friend_request = notification.content_object
+            # confirm this is the correct user
+            if friend_request.receiver == user:
+                # accept the request and get the updated notification
+                updated_notification = friend_request.decline()
 
                 # return the notification associated with this FriendRequest
                 s = LazyNotificationEncoder()
