@@ -9,7 +9,7 @@
 		color: var(--light-primary-text-color);
 	}
 	.scrollable-menu {
-		height: 400px;
+		height: 500px;
 		/* height: auto;   */
 		max-height: 90vh; 
 		width: 500px; 
@@ -146,8 +146,14 @@
 		if(data.general_msg_type == 5){
 			updateGeneralNotificationDiv(data['notification'])
 		}
+
+		// "General" Pagination exhausted. No more results.
 		if(data.general_msg_type == 1){
 			setGeneralPaginationExhausted()
+}
+		// Refresh [newest_timestamp >= NOTIFICATIONS >= oldest_timestamp]
+		if(data.general_msg_type == 2){
+			refreshGeneralNotificationsData(data['notifications'])
 		}
 	}
 
