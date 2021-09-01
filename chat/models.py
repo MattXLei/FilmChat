@@ -19,7 +19,31 @@ class PrivateChatRoom(models.Model):
     user2 = models.ForeignKey(settings.AUTH_USER_MODEL,
                               on_delete=models.CASCADE, related_name="user2")
 
+    # Users who are currently connected to the socket (Used to keep track of unread messages)
+    connected_users = models.ManyToManyField(
+        settings.AUTH_USER_MODEL, blank=True, related_name="connected_users")
+
     is_active = models.BooleanField(default=False)
+
+    def connect_user(self, user):
+        """
+        return true if user is added to the connected_users list
+        """
+        is_user_added = False
+        if not user in self.connected_users.all():
+            self.connected_users.add(user)
+            is_user_added = True
+        return is_user_added
+
+    def disconnect_user(self, user):
+        """
+        return true if user is removed from connected_users list
+        """
+        is_user_removed = False
+        if user in self.connected_users.all():
+            self.connected_users.remove(user)
+            is_user_removed = True
+        return is_user_removed
 
     @property
     def group_name(self):
