@@ -23,3 +23,10 @@ GENERAL_MSG_TYPE_GET_UNREAD_NOTIFICATIONS_COUNT = 4
 
 # Update a notification that has been altered (Ex: Accept/decline a friend request)
 GENERAL_MSG_TYPE_UPDATED_NOTIFICATION = 5
+
+
+"""
+"Chat" notifications include:
+	1. UnreadChatRoomMessages
+"""
+CHAT_MSG_TYPE_NOTIFICATIONS_PAYLOAD = 10  # New 'chat' notifications data payload incoming
