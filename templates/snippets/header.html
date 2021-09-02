@@ -9,8 +9,8 @@
 		color: var(--light-primary-text-color);
 	}
 	.scrollable-menu {
-		height: 500px;
-		/* height: auto;   */
+		/* height: 500px; */
+		height: auto;  
 		max-height: 90vh; 
 		width: 500px; 
 		overflow-x: hidden; 
@@ -205,6 +205,17 @@
 		// new 'chat' notifications data payload
 		if(data.chat_msg_type == 10){
 			handleChatNotificationsData(data['notifications'], data['new_page_number'])
+		}
+		// refreshed chat notifications
+		if(data.chat_msg_type == 13){
+			handleNewChatNotificationsData(data['notifications'])
+		}
+
+		if(data.chat_msg_type == 11){
+			setChatPaginationExhausted()
+		}
+		if(data.chat_msg_type == 14){
+			setChatNotificationsCount(data['count'])
 		}
 
 	}

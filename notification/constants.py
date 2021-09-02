@@ -1,4 +1,4 @@
-DEFAULT_NOTIFICATION_PAGE_SIZE = 10
+DEFAULT_NOTIFICATION_PAGE_SIZE = 15
 
 
 """
@@ -30,3 +30,8 @@ GENERAL_MSG_TYPE_UPDATED_NOTIFICATION = 5
 	1. UnreadChatRoomMessages
 """
 CHAT_MSG_TYPE_NOTIFICATIONS_PAYLOAD = 10  # New 'chat' notifications data payload incoming
+CHAT_MSG_TYPE_GET_NEW_NOTIFICATIONS = 13  # Get any new chat notifications
+# No more 'chat' notifications to retrieve
+CHAT_MSG_TYPE_PAGINATION_EXHAUSTED = 11
+# number of chat notifications
+CHAT_MSG_TYPE_GET_UNREAD_NOTIFICATIONS_COUNT = 14

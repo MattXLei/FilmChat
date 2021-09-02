@@ -68,6 +68,7 @@ class NotificationConsumer(AsyncJsonWebsocketConsumer):
                 else:
                     payload = json.loads(payload)
                     await self.send_updated_friend_request_notification(payload['notification'])
+
             elif command == "decline_friend_request":
                 notification_id = content['notification_id']
                 payload = await decline_friend_request(self.scope['user'], notification_id)
@@ -77,6 +78,7 @@ class NotificationConsumer(AsyncJsonWebsocketConsumer):
                 else:
                     payload = json.loads(payload)
                     await self.send_updated_friend_request_notification(payload['notification'])
+
             elif command == "refresh_general_notifications":
                 payload = await refresh_general_notifications(self.scope["user"], content['oldest_timestamp'], content['newest_timestamp'])
                 if payload == None:
@@ -85,20 +87,40 @@ class NotificationConsumer(AsyncJsonWebsocketConsumer):
                 else:
                     payload = json.loads(payload)
                     await self.send_general_refreshed_notifications_payload(payload['notifications'])
+
             elif command == "get_unread_general_notifications_count":
                 payload = await get_unread_general_notification_count(self.scope["user"])
                 if payload != None:
                     payload = json.loads(payload)
                     await self.send_unread_general_notification_count(payload['count'])
+
             elif command == "mark_notifications_read":
                 await mark_notifications_read(self.scope["user"])
+
             elif command == "get_chat_notifications":
                 payload = await get_chat_notifications(self.scope["user"], content.get("page_number", None))
                 if payload == None:
-                    pass
+                    await self.chat_pagination_exhausted()
                 else:
                     payload = json.loads(payload)
                     await self.send_chat_notifications_payload(payload['notifications'], payload['new_page_number'])
+
+            elif command == "get_new_chat_notifications":
+                payload = await get_new_chat_notifications(self.scope["user"], content.get("newest_timestamp", None))
+                if payload != None:
+                    payload = json.loads(payload)
+                    await self.send_new_chat_notifications_payload(payload['notifications'])
+
+            elif command == "get_unread_chat_notifications_count":
+                try:
+                    payload = await get_unread_chat_notification_count(self.scope["user"])
+                    if payload != None:
+                        payload = json.loads(payload)
+                        await self.send_unread_chat_notification_count(payload['count'])
+                except Exception as e:
+                    print("UNREAD CHAT MESSAGE COUNT EXCEPTION: " + str(e))
+                    pass
+
         except ClientError as e:
             print("EXCEPTION: receive_json: " + str(e))
             pass
@@ -193,6 +215,39 @@ class NotificationConsumer(AsyncJsonWebsocketConsumer):
                 "chat_msg_type": CHAT_MSG_TYPE_NOTIFICATIONS_PAYLOAD,
                 "notifications": notifications,
                 "new_page_number": new_page_number,
+            },
+        )
+
+    async def send_new_chat_notifications_payload(self, notifications):
+        """
+        Called by receive_json when ready to send a json array of the notifications
+        """
+        await self.send_json(
+            {
+                "chat_msg_type": CHAT_MSG_TYPE_GET_NEW_NOTIFICATIONS,
+                "notifications": notifications,
+            },
+        )
+
+    async def chat_pagination_exhausted(self):
+        """
+        Called by receive_json when pagination is exhausted for chat notifications
+        """
+        print("Chat Pagination DONE... No more notifications.")
+        await self.send_json(
+            {
+                "chat_msg_type": CHAT_MSG_TYPE_PAGINATION_EXHAUSTED,
+            },
+        )
+
+    async def send_unread_chat_notification_count(self, count):
+        """
+        Send the number of unread "chat" notifications to the template
+        """
+        await self.send_json(
+            {
+                "chat_msg_type": CHAT_MSG_TYPE_GET_UNREAD_NOTIFICATIONS_COUNT,
+                "count": count,
             },
         )
 
@@ -398,6 +453,50 @@ def get_chat_notifications(user, page_number):
                 return json.dumps(payload)
         else:
             return None
+    else:
+        raise ClientError(
+            "AUTH_ERROR", "User must be authenticated to get notifications.")
+    return None
+
+
+@database_sync_to_async
+def get_new_chat_notifications(user, newest_timestatmp):
+    """
+    Retrieve any notifications newer than the newest_timestatmp on the screen.
+    """
+    payload = {}
+    if user.is_authenticated:
+        # remove timezone because who cares
+        timestamp = newest_timestatmp[0:newest_timestatmp.find("+")]
+        timestamp = datetime.strptime(timestamp, '%Y-%m-%d %H:%M:%S.%f')
+        chatmessage_ct = ContentType.objects.get_for_model(
+            UnreadChatRoomMessages)
+        notifications = Notification.objects.filter(target=user, content_type__in=[
+                                                    chatmessage_ct], timestamp__gt=timestamp).order_by('-timestamp')
+        s = LazyNotificationEncoder()
+        payload['notifications'] = s.serialize(notifications)
+        return json.dumps(payload)
+    else:
+        raise ClientError(
+            "AUTH_ERROR", "User must be authenticated to get notifications.")
+
+    return None
+
+
+@database_sync_to_async
+def get_unread_chat_notification_count(user):
+    payload = {}
+    if user.is_authenticated:
+        chatmessage_ct = ContentType.objects.get_for_model(
+            UnreadChatRoomMessages)
+        notifications = Notification.objects.filter(
+            target=user, content_type__in=[chatmessage_ct])
+
+        unread_count = 0
+        if notifications:
+            unread_count = len(notifications.all())
+        payload['count'] = unread_count
+        return json.dumps(payload)
     else:
         raise ClientError(
             "AUTH_ERROR", "User must be authenticated to get notifications.")
