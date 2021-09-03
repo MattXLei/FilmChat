@@ -86,9 +86,7 @@
 	}
 </style>
 
-{% if debug %}
 PUBLIC CHAT
-{% endif %}
 <span class="{% if not debug %}d-none{% endif %} page-number" id="id_page_number">1</span>
 
 <!-- MEDIUM+ SCREENS -->
@@ -135,7 +133,7 @@ PUBLIC CHAT
 	{% if debug_mode %}
 		var ws_path = ws_scheme + '://' + window.location.host + "/public_chat/{{room_id}}/"; // development
 	{% else %}
-		var ws_path = ws_scheme + '://' + window.location.host + ":8001/public_chat/{{room_id}}/"; // production
+		var ws_path = ws_scheme + '://' + window.location.host + "/public_chat/{{room_id}}/"; // production
 	{% endif %}
 	var public_chat_socket = new WebSocket(ws_path);
 

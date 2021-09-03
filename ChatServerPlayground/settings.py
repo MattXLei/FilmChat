@@ -23,9 +23,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'i3id2(u9f@x&!j!a91i_cs(dedmka(+!93wb5eh=8=2_@cnxzs'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ["www.moviechat-club.chat"]
+ALLOWED_HOSTS = ["moviechat-club.chat"]
 
 if DEBUG:
     # During development only
@@ -93,11 +93,11 @@ ASGI_APPLICATION = "ChatServerPlayground.routing.application"
 
 CHANNEL_LAYERS = {
     'default': {
-        #'BACKEND': 'channels_redis.core.RedisChannelLayer',
-        "BACKEND": "channels.layers.InMemoryChannelLayer",
-        #'CONFIG': {
-        #    "hosts": [('127.0.0.1', 6379)],
-        #},
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        #"BACKEND": "channels.layers.InMemoryChannelLayer",
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
     },
 }
 
@@ -149,7 +149,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media_cdn')
 
 TEMP = os.path.join(BASE_DIR, 'media_cdn/temp')
 
-BASE_URL = "http://127.0.0.1:8000"
+#BASE_URL = "http://127.0.0.1:8000"
+BASE_URL = "https://moviechat-club.chat"
 
 
 DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760  # 10 MB
