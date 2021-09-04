@@ -25,4 +25,5 @@ media_cdn/profile_images/
 #local_db#
 local_db.py
 #cfg file
+settings.py
 ChatServerPlayground/settings.py
