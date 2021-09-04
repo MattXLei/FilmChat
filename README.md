@@ -1,8 +1,8 @@
 ## Description
-I am interesting in movie analysis. To let my friends in our school have a platform to
-discuss on movices. I created this appliacation and have it running on Amazon.
+I really like watching and analyzing movies. To let friends in my school have a platform to
+discuss and learn about movies, I created this application, which is now running on Amazon.
 
-Web url: https://moviechat-club.chat
+Web URL: https://moviechat-club.chat
 
 Moviechat is a online chat application. It is a Django application written in Python.
 
@@ -17,5 +17,4 @@ Moviechat is a online chat application. It is a Django application written in Py
 - https://https://nginx.org/en/
 - https://pypi.org/project/daphne/
 - https://www.postgresql.org/docs/
-https://redis.com/
-
+- https://redis.com/
