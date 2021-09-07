@@ -16,6 +16,8 @@ admin.site.site_header = "The Pet's Movie Chat Administration"
 urlpatterns = [
     #     path('', home_screen_view, name='home'),
     path('', MovieListView.as_view(), name='home'),
+    path('public_chat/', include('public_chat.urls', namespace='public_chat')),
+    path('notification/', include('notification.urls', namespace='notification')),
     path('account/', include('account.urls', namespace='account')),
     path('admin/', admin.site.urls),
     path('chat/', include('chat.urls', namespace='chat')),
