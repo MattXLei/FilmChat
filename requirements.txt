@@ -24,7 +24,7 @@ isort==5.9.1
 lazy-object-proxy==1.6.0
 mccabe==0.6.1
 msgpack==1.0.2
-numpy==1.20.3
+numpy==1.22.0
 opencv-python==4.5.2.54
 opencv-python-headless==4.5.2.54
 Pillow==9.0.0
